@@ -1,5 +1,7 @@
 #ifndef SIMCON
 
+/* PLEASE INCLUDE SOURCE! */
+
 #pragma comment(lib, "SimCon.lib")
 
 #define SIMCON __declspec(dllimport) 
