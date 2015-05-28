@@ -68,6 +68,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="menu_guest.c" />
     <ClCompile Include="menu_login.c" />
+    <ClCompile Include="setup.c" />
     <ClCompile Include="staffs.c" />
   </ItemGroup>
   <ItemGroup>
