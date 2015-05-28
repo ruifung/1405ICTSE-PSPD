@@ -29,7 +29,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="menu_guest.h">
+    <ClInclude Include="menu_global.h">
       <Filter>Header Files\menu</Filter>
     </ClInclude>
   </ItemGroup>

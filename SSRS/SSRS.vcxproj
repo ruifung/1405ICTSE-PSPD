@@ -68,7 +68,7 @@
     <ClCompile Include="menu_guest.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="menu_guest.h" />
+    <ClInclude Include="menu_global.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
