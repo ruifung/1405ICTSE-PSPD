@@ -18,7 +18,7 @@ bool staffs_init(){
 		return 0;
 	}
 	if (attr & FILE_ATTRIBUTE_DIRECTORY){
-		_pause("\nERROR:%s is a folder!\n\nPress any key to exit.", STAFF_FILE);
+		_pause("ERROR:%s is a folder!\n\nPress any key to exit.", STAFF_FILE);
 		exit(0);
 	}
 	staffs_load();
@@ -28,8 +28,7 @@ bool staffs_init(){
 void staffs_save(){
 	FILE *f = fopen(STAFF_FILE, "wb");
 	if (NULL == f){
-		printf("\nERROR:Cannot open %s!\n\nPress any key to exit.", STAFF_FILE);
-		_getch();
+		_pause("ERROR:Cannot open %s!\n\nPress any key to exit.", STAFF_FILE);
 		exit(0);
 	}
 	fwrite(header, sizeof(long), 11, f);
@@ -42,7 +41,7 @@ void staffs_save(){
 void staffs_load(){
 	FILE *f = fopen(STAFF_FILE, "rb");
 	if (NULL == f){
-		_pause("\nERROR:Cannot open %s!\n\nPress any key to exit.", STAFF_FILE);
+		_pause("ERROR:Cannot open %s!\n\nPress any key to exit.", STAFF_FILE);
 		exit(0);
 	}
 	char buffer[44];
@@ -63,7 +62,7 @@ STAFF * staff_by_id(unsigned int id){
 }
 
 STAFF * staff_by_name(char name[]){
-	for (unsigned int i = 0; i < staffs.length; i++) if (strcomp(staffs.data[i].name) == 0) return &(staffs.data[i]);
+	for (unsigned int i = 0; i < staffs.length; i++) if (strcmp(staffs.data[i].name, name) == 0) return &(staffs.data[i]);
 	return NULL;
 }
 

@@ -68,12 +68,18 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="menu_guest.c" />
     <ClCompile Include="menu_login.c" />
-    <ClCompile Include="setup.c" />
     <ClCompile Include="staffs.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="staffs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SSRS.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="court.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
