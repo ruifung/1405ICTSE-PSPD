@@ -5,7 +5,7 @@
 #include <Windows.h>
 
 #include "simcon.h"
-#include "menu_global.h"
+#include "menu.h"
 
 SCI_MENU * m_guest = NULL;
 
@@ -29,13 +29,12 @@ SCI_MENU * menu_guest(){
 bool menu_guest_callback(UINT index){
 	switch (index){
 	case 0:
+		menu_switch(menu_login());
+		return false;
 		break;
 	case 1:
-		if (confirm("Are you sure want to exit?")){
-			menu_switch(NULL);
-			return false;
-		} else {
-			return true;
-		}
+		if (confirm("Are you sure want to exit?")) menu_switch(NULL);
+		else return true;
 	}
+	return false;
 }

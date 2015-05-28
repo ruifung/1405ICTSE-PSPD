@@ -16,9 +16,6 @@
     <Filter Include="Source Files\menu">
       <UniqueIdentifier>{b3c9fd86-3af9-443c-9617-0a00a4218cc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\menu">
-      <UniqueIdentifier>{5096c3a4-daac-463c-bd5e-f0d4ca41e276}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -27,10 +24,19 @@
     <ClCompile Include="menu_guest.c">
       <Filter>Source Files\menu</Filter>
     </ClCompile>
+    <ClCompile Include="menu_login.c">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="staffs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="menu_global.h">
-      <Filter>Header Files\menu</Filter>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="staffs.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
