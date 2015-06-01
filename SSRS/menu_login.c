@@ -60,6 +60,7 @@ void menu_login_pre(){
 		return;
 	}
 	logged_staff = s;
-	printf("\nLogin successfully!\n");
+	printf("\nLogin successful!\n");
 	pause();
+	menu_switch(menu_staff());
 }

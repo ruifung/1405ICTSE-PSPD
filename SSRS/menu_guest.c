@@ -5,17 +5,20 @@
 #include <Windows.h>
 
 #include "simcon.h"
+#include "staffs.h"
 #include "menu.h"
 
 SCI_MENU * m_guest = NULL;
 
 bool menu_guest_callback(UINT);
+void menu_guest_pre();
 
 SCI_MENU * menu_guest(){
 	if (m_guest == NULL){
 		SCI_MENU menu = menu_create("Sport Space Rental System");
 		m_guest = malloc(sizeof(SCI_MENU));
 		memcpy(m_guest, &menu, sizeof(SCI_MENU));
+		m_guest->pre = &menu_guest_pre;
 		SCI_ITEM item;
 		strcpy_s(item.name, 25, "Login");
 		item.callback = &menu_guest_callback;
@@ -24,6 +27,10 @@ SCI_MENU * menu_guest(){
 		menu_add_item(m_guest, item);
 	}
 	return m_guest;
+}
+
+void menu_guest_pre(){
+	if (logged_staff != NULL) menu_switch(menu_staff());
 }
 
 bool menu_guest_callback(UINT index){

@@ -56,10 +56,6 @@ void staffs_load(){
 	fclose(f);
 }
 
-void staffs_reset() {
-	remove(STAFF_FILE);
-}
-
 STAFF * staff_by_id(unsigned int id){
 	for (unsigned int i = 0; i < staffs.length; i++) if (staffs.data[i].id == id) return &(staffs.data[i]);
 	return NULL;
@@ -116,7 +112,7 @@ unsigned int staff_cal_key(char user[], char pass[]){
 	for (int i = 0; i < 24; i++) pwd[i] ^= user[table[i]];
 	short *st1 = (void*)pwd, st2[6];
 	for (int i = 0; i < 6; i++) st2[i] = st1[i * 2] ^ st1[(i * 2) + 1];
-	unsigned *ii = (void*)st2;
+	unsigned int *ii = (void*)st2;
 	ii[0] = ii[0] << 13 & ii[0] >> 19;
 	ii[1] = ii[1] << 10 & ii[1] >> 22;
 	ii[2] = ii[2] << 20 & ii[2] >> 12;

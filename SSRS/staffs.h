@@ -24,7 +24,7 @@ STAFF * logged_staff;
 _Bool staffs_init();
 void staffs_save();
 void staffs_load();
-void staffs_reset();
+
 STAFF * staff_by_id(unsigned int);
 STAFF * staff_by_name(char[]);
 _Bool staffs_push(STAFF);
