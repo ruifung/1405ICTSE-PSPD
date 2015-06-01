@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <Windows.h>
+#include <conio.h>
 
 #include "simcon.h"
 #include "menu.h"

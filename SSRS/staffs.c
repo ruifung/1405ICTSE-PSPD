@@ -113,9 +113,9 @@ unsigned int staff_cal_key(char user[], char pass[]){
 	short *st1 = (void*)pwd, st2[6];
 	for (int i = 0; i < 6; i++) st2[i] = st1[i * 2] ^ st1[(i * 2) + 1];
 	unsigned int *ii = (void*)st2;
-	ii[0] = ii[0] << 13 & ii[0] >> 19;
-	ii[1] = ii[1] << 10 & ii[1] >> 22;
-	ii[2] = ii[2] << 20 & ii[2] >> 12;
+	ii[0] = ii[0] << 13 | ii[0] >> 19;
+	ii[1] = ii[1] << 10 | ii[1] >> 22;
+	ii[2] = ii[2] << 20 | ii[2] >> 12;
 	ii[0] ^= (ii[1] & ii[2]);
 	ii[0] ^= 0xC574EB84;
 	return ii[0];
