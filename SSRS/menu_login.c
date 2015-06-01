@@ -24,20 +24,20 @@ void menu_login_pre(){
 	char un[25] = "";
 	char pass[25] = "";
 	if (!getstr(un, 25, 0, true)){
-		printf("You canceled.\n");
+		printf("\nYou canceled.\n");
 		pause();
 		menu_switch(menu_guest());
 		return;
 	}
 	printf("Password: ");
 	if (!getstr(pass, 25, '*', true)){
-		printf("You canceled.\n");
+		printf("\nYou canceled.\n");
 		pause();
 		menu_switch(menu_guest());
 		return;
 	}
 	if (strlen(pass) < 8){
-		printf("Password must be at least 8 characters!\n");
+		printf("\nPassword must be at least 8 characters!\n");
 		if (confirm("Do you wish to continue?")) return;
 		pause();
 		menu_switch(menu_guest());
