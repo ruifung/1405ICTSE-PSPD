@@ -42,9 +42,9 @@ void setup(){
 	getstr(name, 65, 0, false);
 	printf("\nPlease enter a username for Admin (for login):\n");
 	getstr(user, 25, 0, false);
-	if (strlen(pass) < 6){
+	if (strlen(user) < 5){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		printf("\nThe username must be at least 8 characters!\n");
+		printf("\nThe username must be at least 5 characters!\n");
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();
 		return;

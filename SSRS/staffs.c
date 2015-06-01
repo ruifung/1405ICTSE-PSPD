@@ -66,7 +66,7 @@ STAFF * staff_by_id(unsigned int id){
 }
 
 STAFF * staff_by_name(char name[]){
-	for (unsigned int i = 0; i < staffs.length; i++) if (strcmp(staffs.data[i].name, name) == 0) return &(staffs.data[i]);
+	for (unsigned int i = 0; i < staffs.length; i++) if (strcmp(staffs.data[i].username, name) == 0) return &(staffs.data[i]);
 	return NULL;
 }
 
@@ -130,5 +130,5 @@ void staff_set_pwd(STAFF *s, char pwd[]){
 }
 
 _Bool staff_cmp_pwd(STAFF s, char pwd[]){
-	return (s.key = staff_cal_key(s.username, pwd));
+	return (s.key == staff_cal_key(s.username, pwd));
 }

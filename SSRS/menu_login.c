@@ -4,6 +4,7 @@
 
 #include "simcon.h"
 #include "menu.h"
+#include "staffs.h"
 
 SCI_MENU * m_login = NULL;
 
@@ -43,5 +44,22 @@ void menu_login_pre(){
 		menu_switch(menu_guest());
 		return;
 	}
-	
+	STAFF *s = staff_by_name(un);
+	if (s == NULL){
+		printf("\nLogin failed!\n");
+		if (confirm("Do you wish to continue?")) return;
+		pause();
+		menu_switch(menu_guest());
+		return;
+	}
+	if (!staff_cmp_pwd(*s, pass)){
+		printf("\nLogin failed!\n");
+		if (confirm("Do you wish to continue?")) return;
+		pause();
+		menu_switch(menu_guest());
+		return;
+	}
+	logged_staff = s;
+	printf("\nLogin successfully!\n");
+	pause();
 }
