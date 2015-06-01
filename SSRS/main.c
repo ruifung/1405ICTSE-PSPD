@@ -26,9 +26,54 @@ int main(int argc, char * args[]){
 		for (int i = 0; i <= strlen(fname); i++)finfo.FaceName[i] = fname[i];
 		SetCurrentConsoleFontEx(StdoutHandle, true, &finfo);
 	}
-	if (!staffs_init()) setup();
+	while (!staffs_init()) setup();
 	menu_start(menu_guest());
 }
 
 void setup(){
+	clrscr;
+	SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
+	printf("WARNING: This program haven't setup, please setup before use!\n");
+	SetConTextAttr(FOREGROUND_WHITE);
+	_pause("Press any key to start setup.");
+	clrscr;
+	char name[65] = "Administrator", user[25] = "admin", pass[25] = "", temp[25] = "";
+	printf("Please enter a name for Admin:\n");
+	getstr(name, 65, 0, false);
+	printf("\nPlease enter a username for Admin (for login):\n");
+	getstr(user, 25, 0, false);
+	if (strlen(pass) < 6){
+		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
+		printf("\nThe username must be at least 8 characters!\n");
+		SetConTextAttr(FOREGROUND_WHITE);
+		pause();
+		return;
+	}
+	printf("\nPlease enter a password for Admin (at least 8 characters):\n");
+	getstr(pass, 25, '*', false);
+	if (strlen(pass) < 8){
+		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
+		printf("\nThe password must be at least 8 characters!\n");
+		SetConTextAttr(FOREGROUND_WHITE);
+		pause();
+		return;
+	}
+	printf("\nPlease confirm the password:\n");
+	getstr(temp, 25, '*', false);
+	_putch('\n');
+	if (strcmp(pass, temp)){
+		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
+		printf("\nTwo password doesn't match!\n");
+		SetConTextAttr(FOREGROUND_WHITE);
+		pause();
+		return;
+	}
+	STAFF admin;
+	admin.id = 1;
+	admin.admin = true;
+	strcpy(admin.name, name);
+	strcpy(admin.username, user);
+	admin.key = staff_cal_key(admin.username, pass);
+	staffs_push(admin);
+	staffs_save();
 }

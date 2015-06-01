@@ -12,6 +12,10 @@ long header[] = { 2037411651, 1751607666, 808591476,
 				  543976513, 1751607634, 1377858420,
 				  1919251301, 778331510 };
 
+char table[] = { 21, 12, 9, 18, 2, 16, 19, 1, 19, 2, 23, 4, 15, 18, 18, 18, 16, 8, 14, 22, 23,
+				 21, 5, 6, 0, 1, 8, 9, 14, 10, 5, 13, 18, 16, 20, 12, 4, 2, 11, 22, 7, 17, 19,
+				 3, 6, 21, 15, 23 };
+
 bool staffs_init(){
 	DWORD attr = GetFileAttributes(STAFF_FILE);
 	if ((attr == INVALID_FILE_ATTRIBUTES)){
@@ -104,19 +108,27 @@ _Bool staffs_insert(unsigned int index, STAFF n){
 	return 0;
 }
 
+unsigned int staff_cal_key(char user[], char pass[]){
+	char pwd[25];
+	strcpy(pwd, pass);
+	memset(pwd + strlen(pwd), 0, 25 - strlen(pwd));
+	memset(user + strlen(user), 0, 25 - strlen(user));
+	for (int i = 0; i < 24; i++) pwd[i] ^= user[table[i]];
+	short *st1 = (void*)pwd, st2[6];
+	for (int i = 0; i < 6; i++) st2[i] = st1[i * 2] ^ st1[(i * 2) + 1];
+	unsigned *ii = (void*)st2;
+	ii[0] = ii[0] << 13 & ii[0] >> 19;
+	ii[1] = ii[1] << 10 & ii[1] >> 22;
+	ii[2] = ii[2] << 20 & ii[2] >> 12;
+	ii[0] ^= (ii[1] & ii[2]);
+	ii[0] ^= 0xC574EB84;
+	return ii[0];
+}
+
 void staff_set_pwd(STAFF *s, char pwd[]){
-	(*s).password[16] = 0;
-	for (int i = 0; i < 17; i++){
-		if (pwd[i] != 0) (*s).password[i] = (pwd[i] ^ 0x69) + 1;
-		else (*s).password[i] = pwd[i];
-	}
+	s->key = staff_cal_key(s->username, pwd);
 }
 
 _Bool staff_cmp_pwd(STAFF s, char pwd[]){
-	char cache[17] = "";
-	for (int i = 0; i < 17; i++){
-		if (s.password[i] == 0) break;
-		cache[i] = ((s.password[i] - 1) ^ 0x69);
-	}
-	return (strcmp(cache, pwd) == 0);
+	return (s.key = staff_cal_key(s.username, pwd));
 }

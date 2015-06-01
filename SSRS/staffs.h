@@ -8,7 +8,7 @@ typedef struct STAFF{
 	unsigned int id;
 	char username[25];
 	char name[65];
-	char password[25];
+	unsigned int key;
 	_Bool admin;
 } STAFF;
 
@@ -31,6 +31,7 @@ _Bool staffs_push(STAFF);
 void staffs_delete(unsigned int);
 _Bool staffs_insert(unsigned int, STAFF);
 
+unsigned int staff_cal_key(char[], char[]);
 void staff_set_pwd(STAFF*, char[]);
 _Bool staff_cmp_pwd(STAFF, char[]);
 
