@@ -17,7 +17,7 @@ SCI_MENU * menu_login(){
 		memcpy(m_login, &menu, sizeof(SCI_MENU));
 		m_login->pre = &menu_login_pre;
 	}
-	return m_login;
+	return m_login; 
 }
 
 void menu_login_pre(){

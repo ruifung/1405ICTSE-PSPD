@@ -37,7 +37,7 @@ typedef _Bool (*SCI_ITEM_CALLBACK)(unsigned int);
 typedef void(*SCI_MENU_PRE)();
 
 typedef struct{
-	char name[25];
+	char name[31];
 	SCI_ITEM_CALLBACK callback;
 } SCI_ITEM;
 
