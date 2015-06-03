@@ -1,6 +1,13 @@
+/*
+	Simple Console Interface Library
+	
+	https://github.com/0nepeop1e/SimCon
+	
+	Actualy this project is just for fun help to improve
+	user experience of console application, it is a Visual
+	Studio 2013 project, only for windows XD
+*/
 #ifndef SIMCON
-
-/* PLEASE INCLUDE SOURCE! */
 
 #pragma comment(lib, "SimCon.lib")
 

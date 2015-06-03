@@ -74,6 +74,7 @@
     <ClCompile Include="staffs.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="admin.h" />
     <ClInclude Include="conmac.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="resource.h" />
