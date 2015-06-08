@@ -90,6 +90,7 @@ bool menu_staff_cpwd_callback(UINT index){
 		return true;
 	}
 	staff_set_pwd(logged_staff, npwd);
+	staffs_save();
 	printf("\nPassword changed!\n");
 	return true;
 }

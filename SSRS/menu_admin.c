@@ -11,6 +11,7 @@ SCI_MENU * m_admin = NULL;
 
 void menu_admin_pre();
 bool menu_admin_callback(UINT);
+void admin_add_staff();
 
 SCI_MENU * menu_admin(){
 	if (m_admin == NULL){
@@ -57,6 +58,7 @@ void menu_admin_pre(){
 bool menu_admin_callback(UINT index){
 	switch (index){
 	case 0:
+		admin_add_staff();
 		break;
 	case 1:
 		admin_action = ADMIN_ACTION_DELETE;
@@ -65,7 +67,7 @@ bool menu_admin_callback(UINT index){
 		break;
 	case 2:
 		admin_action = ADMIN_ACTION_EDIT;
-		admin_selection_page = 1;
+		admin_selection_page = 0;
 
 		break;
 	case 3:
@@ -75,4 +77,66 @@ bool menu_admin_callback(UINT index){
 		break;
 	}
 	return false;
+}
+
+void admin_add_staff(){
+	STAFF staff = { 0 };
+	char pwd1[25] = "", pwd2[25] = "";
+	printf("New staff's name:\n");
+	if (!getstr(staff.name, 65, 0, true)){
+		printf("\nYou canceled.\n");
+		pause();
+		return;
+	}
+	printf("\nNew staff's username:\n");
+	if (!getstr(staff.username, 25, 0, true)){
+		printf("\nYou canceled.\n");
+		pause();
+		return;
+	}
+	if (strlen(staff.username) < 5){
+		printf("\nUsername must atleast 5 characters!\n");
+		pause();
+		return;
+	}
+	if (staff_by_name(staff.username) != NULL){
+		printf("\nThis username has been taken!\n");
+		pause();
+		return;
+	}
+	printf("\nPassword for new staff: \n");
+	if (!getstr(pwd1, 25, '*', true)){
+		printf("\nYou canceled.\n");
+		pause();
+		return;
+	}
+	if (strlen(pwd1) < 8){
+		printf("\nUsername must atleast 8 characters!\n");
+		pause();
+		return;
+	}
+	printf("\nConfirm password: \n");
+	if (!getstr(pwd2, 25, '*', true)){
+		printf("\nYou canceled.\n");
+		pause();
+		return;
+	}
+	if (strcmp(pwd1, pwd2) != 0){
+		printf("\nPassword does't match!\n");
+		pause();
+		return;
+	}
+	staff_set_pwd(&staff, pwd1);
+	staff.admin = confirm("\nIs this account is an administrator?");
+	printf("\nNew Staff Account:\n");
+	printf("%-10s%s\n", "Name:", staff.name);
+	printf("%-10s%s\n", "Username:", staff.username);
+	printf("%-10s%s\n", "Admin:", staff.admin ? "Yes" : "No");
+	if (confirm("Are you sure to create this account?")){
+		if (staffs_push(staff)){
+			printf("Account created successful.\n");
+			staffs_save();
+		} else ("Failed to create account, maximum staff amount (100) reached!\n");
+	}
+	pause();
 }
