@@ -68,6 +68,7 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="menu_admin.c" />
+    <ClCompile Include="menu_admin_select.c" />
     <ClCompile Include="menu_guest.c" />
     <ClCompile Include="menu_login.c" />
     <ClCompile Include="menu_staff.c" />

@@ -22,7 +22,7 @@ bool staffs_init(){
 		return 0;
 	}
 	if (attr & FILE_ATTRIBUTE_DIRECTORY){
-		_pause("ERROR:%s is a folder!\n\nPress any key to exit.", STAFF_FILE);
+		_pause("ERROR:%s is a folder!\n\nPress any key to exit.", "asdf",STAFF_FILE);
 		exit(0);
 	}
 	staffs_load();
@@ -50,6 +50,10 @@ void staffs_load(){
 	}
 	char buffer[44];
 	fread(buffer, sizeof(long), 11, f);
+	if (memcmp(header, buffer, 44) != 0 ){
+		_pause("ERROR:%s is corrupted!\n\nPress any key to exit.", STAFF_FILE);
+		exit(0);
+	}
 	fread(&staffs.length, sizeof(int), 1, f);
 	fread(&staffs.last_id, sizeof(int), 1, f);
 	fread(staffs.data, sizeof(STAFF), staffs.length, f);

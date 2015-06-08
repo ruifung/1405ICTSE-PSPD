@@ -62,13 +62,11 @@ bool menu_admin_callback(UINT index){
 		break;
 	case 1:
 		admin_action = ADMIN_ACTION_DELETE;
-		admin_selection_page = 0;
-		
+		menu_switch(menu_admin_select(0));
 		break;
 	case 2:
 		admin_action = ADMIN_ACTION_EDIT;
-		admin_selection_page = 0;
-
+		menu_switch(menu_admin_select(0));
 		break;
 	case 3:
 		m_admin->size = 0;

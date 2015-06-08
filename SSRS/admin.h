@@ -6,7 +6,6 @@
 
 UINT admin_action;
 UINT admin_selected;
-UINT admin_selection_page;
 _Bool admin_login;
 
 #endif

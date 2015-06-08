@@ -36,6 +36,9 @@
     <ClCompile Include="menu_admin.c">
       <Filter>Source Files\menu</Filter>
     </ClCompile>
+    <ClCompile Include="menu_admin_select.c">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu.h">
