@@ -22,6 +22,11 @@
 
 #define MENU_MAX_ITEM 20
 
+/*
+	Macro to create an SCI_ITEM
+*/
+#define sci_item(name, callback) ((SCI_ITEM) {name, callback})
+
 typedef struct{
 	unsigned char f;
 	unsigned char s;
