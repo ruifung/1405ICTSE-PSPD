@@ -89,7 +89,7 @@ bool menu_admin_select_selected(UINT index){
 			return true;
 		}
 		_pause("Press any key to edit this staff.");
-
+		menu_switch(menu_admin_edit(selected));
 		break;
 	}
 	return false;
