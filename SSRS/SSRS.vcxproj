@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClInclude Include="admin.h" />
     <ClInclude Include="conmac.h" />
+    <ClInclude Include="courts.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="staffs.h" />
