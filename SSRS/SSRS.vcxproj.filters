@@ -45,6 +45,9 @@
     <ClCompile Include="menu_admin_select.c">
       <Filter>Source Files\menu\admin</Filter>
     </ClCompile>
+    <ClCompile Include="courts.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu.h">

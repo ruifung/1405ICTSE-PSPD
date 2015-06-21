@@ -66,6 +66,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="courts.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="menu_admin.c" />
     <ClCompile Include="menu_admin_edit.c" />
