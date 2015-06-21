@@ -1,3 +1,6 @@
+#ifndef COMMAC
+#define COMMAC
+
 #define FOREGROUND_WHITE (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED)
 #define FOREGROUND_CYAN (FOREGROUND_BLUE | FOREGROUND_GREEN)
 #define FOREGROUND_MAGENTA (FOREGROUND_BLUE | FOREGROUND_RED)
@@ -24,3 +27,5 @@
 #define FlushConInput FlushConsoleInputBuffer(StdinHandle)
 #define SetConCursorInfo(visible, size) {CONSOLE_CURSOR_INFO ci = {size, visible};SetConsoleCursorInfo(StdoutHandle, &ci);}
 #define clrscr system("cls");
+
+#endif
