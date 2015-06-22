@@ -12,10 +12,14 @@
 #define COURT_NAME_FUTSAL "Futsal"
 
 #define MAX_BOOKING_SIZE 5000
-#define CUSTOMER_NAME_SIZE 65
 
-// Seconds per section
-#define SPS (30 * 60)
+// Seconds per block (30 mins)
+#define BLOCK_DURATION (30 * 60)
+
+struct {
+	FILE reservations;
+	FILE customers;
+} courts_config;
 
 typedef struct {
 	unsigned int id;
@@ -23,21 +27,19 @@ typedef struct {
 	char label;
 	int start;
 	int end;
-	float price; // per section
+	float rate; // per block
 } COURT;
 
 typedef struct{
 	unsigned int id;
 	unsigned int customer_id;
-	unsigned int court_id;
-	unsigned int section;
+	char court_id;
+	time_t startTime;
 	unsigned int duration;
-} BOOK;
-
-typedef struct{
-	unsigned int id;
-	char name[CUSTOMER_NAME_SIZE];
-} CUSTOMER;
+} RESERVATION;
 
 COURT courts[12];
+
+void courts_init();
+char* courts_typeIDStr(int type);
 #endif // !COURTS_HEADER
