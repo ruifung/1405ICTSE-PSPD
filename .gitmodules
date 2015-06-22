@@ -1,0 +1,3 @@
+[submodule "simcon"]
+	path = SimCon
+	url = https://github.com/0nepeop1e/SimCon.git
