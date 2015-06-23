@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <Windows.h>
 
 #include "bst.h"
+#include "simcon.h"
 #include "courts.h"
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
