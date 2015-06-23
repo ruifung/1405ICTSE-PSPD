@@ -1,11 +1,11 @@
 #ifndef BST
 #define BST
 
-typedef struct {
+typedef struct BST_NODE_S{
 	char *string;
 	void *data;
-	BST_NODE *left;
-	BST_NODE *right;
+	struct BST_NODE_S *left;
+	struct BST_NODE_S *right;
 } BST_NODE;
 
 bool bst_addNode(BST_NODE **rootNode, wchar_t *string, void *data);
