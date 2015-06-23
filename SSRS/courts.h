@@ -1,6 +1,8 @@
 #ifndef COURTS_HEADER
 #define COURTS_HEADER
 
+#define COURTS_RESERVATION_FILE "reservations.dat"
+
 #define COURT_TYPE_BATMINTON 0
 #define COURT_TYPE_SQUASH 1
 #define COURT_TYPE_TENNIS 2
@@ -36,7 +38,7 @@ typedef struct{
 
 COURT courts[12];
 
-void courts_init();
+void courts_init(char *);
 char *courts_typeIDStr(int type);
 int courts_timeBlock(time_t time);
 time_t courts_blockTime(int block);

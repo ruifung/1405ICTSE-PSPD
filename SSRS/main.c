@@ -6,6 +6,7 @@
 #include "simcon.h"
 #include "menu.h"
 #include "staffs.h"
+#include "courts.h"
 #include "resource.h"
 #include "conmac.h"
 
@@ -28,6 +29,7 @@ int main(int argc, char * args[]){
 	SetCurrentConsoleFontEx(StdoutHandle, true, &finfo);
 	
 	while (!staffs_init()) setup();
+	courts_init(COURTS_RESERVATION_FILE);
 	menu_start(menu_guest());
 }
 
