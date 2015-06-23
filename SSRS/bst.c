@@ -15,7 +15,7 @@ int bst_strcmp (BST_CMPR_ARGS) {
 }
 
 bool bst_addNodeStr(BST_NODE **node, char *string, void *data) {
-	bst_addNode(node, string, strlen(string), data, &bst_strcmp);
+	return bst_addNode(node, string, strlen(string), data, &bst_strcmp);
 }
 
 bool bst_addNode(BST_NODE **node, void *key, unsigned int keylen, void *data, BST_CMPR cmpr) {

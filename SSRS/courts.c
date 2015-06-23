@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "bst.h"
 #include "courts.h"
@@ -21,6 +22,7 @@ struct {
 void utoa(unsigned int uint, char *byteArray);
 _Bool courts_load();
 _Bool courts_save();
+uint courts_getFirstBlockSlot(uint block, char courtId);
 int courts_cmpr(BST_CMPR_ARGS);
 
 void courts_init(char *reservationsFile){
@@ -83,7 +85,11 @@ char* courts_typeIDStr(int type) {
 }
 
 RESERVATION *courts_getReservation(unsigned int id) {
-	return NULL;
+	uint upperIndex = reservations.length - 1;
+	uint lowerIndex = 0;
+	while (true) {
+		
+	}
 }
 
 unsigned int courts_countCourtReservations(char courtId) {
@@ -100,13 +106,28 @@ void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned
 }
 
 RESERVATION *courts_getBlockReservation(char courtId, uint block) {
+	//Get the first time block of that day. (Obviously bookings won't stretch past a day)
+	uint firstBlockOfDay = courts_getFirstBlockSlot(block, courtId);
+	//Search for any booking that starts on the specified time block.
 	BST_NODE *node = bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+	//If no results...
 	if (node == NULL) {
-		for (uint blk = block;/*blk > firstBlock of the day*/;blk--) {
-			bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+		//Check each block before it up to the first block of the day.
+		for (uint blk = block;blk > firstBlockOfDay;blk--) {
+			BST_NODE *tmpNode;
+			tmpNode = bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+			//If a reservation exists for that block...
+			if (tmpNode != NULL) {
+				RESERVATION *rsvpPtr = tmpNode->data;
+				//Check if its ending block is AFTER the specified block.
+				if ((rsvpPtr->startTime + rsvpPtr->blockCount) >= block) {
+					return rsvpPtr;
+				}
+			}
 		}
 	}
-	return (RESERVATION *)node->data;
+	if (node == NULL) return NULL;
+	else return (RESERVATION *)node->data;
 }
 
 bool courts_checkBlockRange(unsigned int lowerBlock, unsigned int upperBlock) {
@@ -132,4 +153,16 @@ bool *courts_delReservation(RESERVATION *reservation) {
 
 int courts_cmpr(BST_CMPR_ARGS) {
 	return *(uint *)key1 - *(uint *)key2;
+}
+
+uint courts_getFirstBlockSlot(uint block, char courtId) {
+	time_t blockTime = (time_t)(block * BLOCK_DURATION);
+	time_t now = time(&blockTime);
+	struct tm *date = localtime(&now);
+	date->tm_hour = 0;
+	date->tm_min = 0;
+	date->tm_sec = 0;
+	getdate(date, false);
+	time_t start = mktime(date);
+	return (start / BLOCK_DURATION) + courts[courtId].startBlock;
 }

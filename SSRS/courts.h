@@ -26,8 +26,8 @@ typedef struct {
 	uint id;
 	uint type;
 	char label;
-	int startBlock;
-	int endBlock;
+	uint startBlock;
+	uint endBlock;
 	float rate; // per block
 	BST_NODE *reservations;
 } COURT;
