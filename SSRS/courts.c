@@ -7,18 +7,21 @@
 #include "courts.h"
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
+const int endianCheck = 1;
+#define is_bigendian() ( (*(char*)&endianCheck) == 0 )
 
 COURT courts[COURTS_COUNT];
 char *reservations_file;
 struct {
-	unsigned long int length;
-	unsigned long int lastID;
+	uint length;
+	uint lastID;
 	RESERVATION **data;
 } reservations;
 
+void utoa(unsigned int uint, char *byteArray);
 _Bool courts_load();
 _Bool courts_save();
-char *utoa(unsigned int num);
+int courts_cmpr(BST_CMPR_ARGS);
 
 void courts_init(char *reservationsFile){
 	courts[0] = (COURT){ 0, COURT_TYPE_BATMINTON, 'A', 14, 44, 8.0f, NULL };
@@ -53,7 +56,7 @@ _Bool courts_load() {
 			return false;
 		reservations_read(tmpPtr, sizeof(RESERVATION), 1, file);
 		reservations.data[i] = tmpPtr;
-		bst_addNode(&courts[tmpPtr->court_id].reservations,utoa(tmpPtr->startTime),tmpPtr);
+		bst_addNode(&courts[tmpPtr->court_id].reservations,&(tmpPtr->startTime),sizeof(uint),tmpPtr,&courts_cmpr);
 	}
 	free(tmpPtr);
 	fclose(file);
@@ -96,10 +99,13 @@ void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned
 	free(tmpArr);
 }
 
-RESERVATION *courts_getBlockReservation(char courtId, unsigned int block) {
-	char *blockStr = utoa(block);
-	BST_NODE *node = bst_search(courts[courtId].reservations, blockStr);
-	free(blockStr);
+RESERVATION *courts_getBlockReservation(char courtId, uint block) {
+	BST_NODE *node = bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+	if (node == NULL) {
+		for (uint blk = block;/*blk > firstBlock of the day*/;blk--) {
+			bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+		}
+	}
 	return (RESERVATION *)node->data;
 }
 
@@ -124,15 +130,6 @@ bool *courts_delReservation(RESERVATION *reservation) {
 	return false;
 }
 
-//Count number of digits in a int;
-unsigned int uintPlaces(unsigned int n) {
-	if (n < 10) return 1;
-	return 1 + uintPlaces(n / 10);
-}
-
-char *utoa(unsigned int num) {
-	unsigned int places = uintPlaces(num);
-	char *string = malloc(places * sizeof(char) + 1);
-	sprintf(string, "%u", num);
-	return string;
+int courts_cmpr(BST_CMPR_ARGS) {
+	return *(uint *)key1 - *(uint *)key2;
 }

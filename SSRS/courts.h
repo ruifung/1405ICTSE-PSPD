@@ -19,11 +19,12 @@
 // Seconds per block (30 mins)
 #define BLOCK_DURATION (30 * 60)
 
+typedef unsigned int uint;
 typedef struct BST_NODE_S BST_NODE;
 
 typedef struct {
-	unsigned int id;
-	unsigned int type;
+	uint id;
+	uint type;
 	char label;
 	int startBlock;
 	int endBlock;
@@ -32,11 +33,11 @@ typedef struct {
 } COURT;
 
 typedef struct {
-	unsigned int id;
-	unsigned int customer_id;
+	uint id;
+	uint customer_id;
 	char court_id;
-	unsigned int startTime;
-	unsigned int blockCount;
+	uint startTime;
+	uint blockCount;
 } RESERVATION;
 
 extern COURT courts[COURTS_COUNT];
@@ -46,11 +47,11 @@ char *courts_typeIDStr(int type);
 int courts_timeBlock(time_t time);
 time_t courts_blockTime(int block);
 
-RESERVATION *courts_getReservation(unsigned int id);
-unsigned int courts_countCourtReservations(char courtId);
-void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned int maxCount);
-RESERVATION *courts_getBlockReservation(char courtId, unsigned int block);
-bool courts_checkBlockRange(unsigned int lowerBlock, unsigned int upperBlock);
-RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsigned int startTime, unsigned int blockCount);
+RESERVATION *courts_getReservation(uint id);
+uint courts_countCourtReservations(char courtId);
+void courts_getCourtReservations(char courtId, RESERVATION **dataArray, uint maxCount);
+RESERVATION *courts_getBlockReservation(char courtId, uint block);
+bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
+RESERVATION *courts_addReservation(uint customerId, char courtId, uint startTime, uint blockCount);
 bool *courts_delReservation(RESERVATION *reservation);
 #endif // !COURTS_HEADER
