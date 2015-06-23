@@ -4,12 +4,19 @@
 #include <stdbool.h>
 
 #include "customers.h"
-#include "customers_internal.h"
 #include "bst.h"
 
-//INTERNAL USE FUNCTION PROTOTYPES. External use ones defined in header.
-
+//INTERNAL USE STUFF.
+#define cust_readDynamicLengthString(buffer,length,file) fread_s(buffer, length * sizeof(char), sizeof(char), length, file);
+//INTERNAL USE GLOBAL VARIABLES.
+struct {
+	unsigned int lastID;
+	long int length;
+	CUSTOMER *data;
+} customers;
+char *customer_file;
 BST_NODE *nameSearch = NULL;
+
 
 void customers_init(char* configFile) {
 	customer_file = configFile;
@@ -64,4 +71,24 @@ void customers_savefile() {
 		fwrite(customer.email, emailLen * sizeof(char), 1, file);
 	}
 	fclose(file);
+}
+
+CUSTOMER *customers_getById(unsigned int id) {
+
+}
+
+CUSTOMER *customers_getByName(char* name) {
+
+}
+
+CUSTOMER *customers_getByEmail(char* email) {
+
+}
+
+bool customers_add(CUSTOMER customer) {
+
+}
+
+bool customers_del(CUSTOMER customer) {
+
 }

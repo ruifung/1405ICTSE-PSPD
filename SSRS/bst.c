@@ -46,32 +46,33 @@ BST_NODE *bst_search(BST_NODE *node,char *string) {
 }
 
 //Stores all child nodes in storageLocation and returns count.
-int bst_getChilds(BST_NODE *node, BST_NODE **storageLocation) {
-	int count = 0;
+void bst_getChilds(BST_NODE *node, BST_NODE *storageLocation, unsigned int maxCount) {
+	unsigned int index = 0;
+	bst_getChildsRecur(node, &index, storageLocation, maxCount);
+}
+
+unsigned int bst_countChilds(BST_NODE *node) {
+	unsigned int count = 0;
 	bst_countChildsRecur(node, &count);
-	*storageLocation = malloc(sizeof(BST_NODE) * count);
-	int index = 0;
-	bst_getChildsRecur(node, &index, *storageLocation);
 	return count;
 }
 
-void bst_countChildsRecur(BST_NODE *node, int *count) {
+void bst_countChildsRecur(BST_NODE *node, unsigned int *count) {
 	*count++;
 	if (node->left != NULL)
 		bst_countChildsRecur(node, count);
 	if (node->right != NULL)
 		bst_countChildsRecur(node, count);
-	return;
 }
 
-void bst_getChildsRecur(BST_NODE *node, int *currentIndex, BST_NODE *dataArray) {
-	if (node == NULL) return;
+void bst_getChildsRecur(BST_NODE *node, unsigned int *currentIndex, BST_NODE *dataArray, unsigned int maxCount) {
+	if (node == NULL || *currentIndex == maxCount) return;
 	dataArray[*currentIndex] = *node;
 	dataArray[*currentIndex].left = NULL;
 	dataArray[*currentIndex].right = NULL;
 	*currentIndex++;
-	bst_getChildsRecur(node->left, currentIndex, dataArray);
-	bst_getChildsRecur(node->right, currentIndex, dataArray);
+	bst_getChildsRecur(node->left, currentIndex, dataArray, maxCount);
+	bst_getChildsRecur(node->right, currentIndex, dataArray, maxCount);
 }
 
 //Frees all memory allocated to a node and its branches.

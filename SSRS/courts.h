@@ -16,30 +16,36 @@
 // Seconds per block (30 mins)
 #define BLOCK_DURATION (30 * 60)
 
-struct {
-	FILE reservations;
-	FILE customers;
-} courts_config;
-
 typedef struct {
 	unsigned int id;
 	unsigned int type;
 	char label;
-	int start;
-	int end;
+	int startBlock;
+	int endBlock;
 	float rate; // per block
+	BST_NODE reservations;
 } COURT;
 
 typedef struct{
 	unsigned int id;
 	unsigned int customer_id;
 	char court_id;
-	time_t startTime;
-	unsigned int duration;
+	unsigned int startTime;
+	unsigned int blockCount;
 } RESERVATION;
 
 COURT courts[12];
 
 void courts_init();
-char* courts_typeIDStr(int type);
+char *courts_typeIDStr(int type);
+int courts_timeBlock(time_t time);
+time_t courts_blockTime(int block);
+
+RESERVATION *courts_getReservation(unsigned int id);
+unsigned int courts_countCourtReservations(char courtId);
+void courts_getCourtReservations(char courtId, RESERVATION *dataArray, unsigned int maxCount);
+RESERVATION *courts_getBlockReservation(unsigned int block);
+bool courts_checkBlockRange(unsigned int lowerBlock, unsigned int upperBlock);
+RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsigned int startTime, unsigned int blockCount);
+bool *courts_delReservation(RESERVATION *reservation);
 #endif // !COURTS_HEADER

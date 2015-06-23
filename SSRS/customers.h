@@ -12,7 +12,7 @@ void customers_init(FILE customer_file);
 CUSTOMER *customers_getById(unsigned int id);
 CUSTOMER *customers_getByName(char* name);
 CUSTOMER *customers_getByEmail(char* email);
-_Bool customers_add(CUSTOMER customer);
-_Bool customers_del(CUSTOMER customer);
+bool customers_add(CUSTOMER customer);
+bool customers_del(CUSTOMER customer);
 
 #endif
