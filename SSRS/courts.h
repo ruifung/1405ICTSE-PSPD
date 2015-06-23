@@ -14,9 +14,12 @@
 #define COURT_NAME_FUTSAL "Futsal"
 
 #define MAX_BOOKING_SIZE 5000
+#define COURTS_COUNT 12
 
 // Seconds per block (30 mins)
 #define BLOCK_DURATION (30 * 60)
+
+typedef struct BST_NODE_S BST_NODE;
 
 typedef struct {
 	unsigned int id;
@@ -25,10 +28,10 @@ typedef struct {
 	int startBlock;
 	int endBlock;
 	float rate; // per block
-	BST_NODE reservations;
+	BST_NODE *reservations;
 } COURT;
 
-typedef struct{
+typedef struct {
 	unsigned int id;
 	unsigned int customer_id;
 	char court_id;
@@ -36,7 +39,7 @@ typedef struct{
 	unsigned int blockCount;
 } RESERVATION;
 
-COURT courts[12];
+extern COURT courts[COURTS_COUNT];
 
 void courts_init(char *);
 char *courts_typeIDStr(int type);
@@ -45,8 +48,8 @@ time_t courts_blockTime(int block);
 
 RESERVATION *courts_getReservation(unsigned int id);
 unsigned int courts_countCourtReservations(char courtId);
-void courts_getCourtReservations(char courtId, RESERVATION *dataArray, unsigned int maxCount);
-RESERVATION *courts_getBlockReservation(unsigned int block);
+void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned int maxCount);
+RESERVATION *courts_getBlockReservation(char courtId, unsigned int block);
 bool courts_checkBlockRange(unsigned int lowerBlock, unsigned int upperBlock);
 RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsigned int startTime, unsigned int blockCount);
 bool *courts_delReservation(RESERVATION *reservation);

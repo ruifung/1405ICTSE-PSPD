@@ -8,6 +8,8 @@
 
 //INTERNAL USE STUFF.
 #define cust_readDynamicLengthString(buffer,length,file) fread_s(buffer, length * sizeof(char), sizeof(char), length, file);
+void customers_readfile();
+CUSTOMER customers_readcustomer(FILE *file);
 //INTERNAL USE GLOBAL VARIABLES.
 struct {
 	unsigned int lastID;
@@ -62,8 +64,8 @@ void customers_savefile() {
 		fwrite(&customer.id, sizeof(unsigned int), 1, file);
 		fwrite(&customer.contact_num, sizeof(unsigned int), 1, file);
 		//Calculate and write length of dyanmic length variables.
-		nameLen = wcslen(customer.name) + 1;
-		emailLen = wcslen(customer.email) + 1;
+		nameLen = strlen(customer.name) + 1;
+		emailLen = strlen(customer.email) + 1;
 		fwrite(&nameLen, sizeof(char), 1, file);
 		fwrite(&emailLen, sizeof(char), 1, file);
 		//Write dynamic length data.
@@ -74,21 +76,21 @@ void customers_savefile() {
 }
 
 CUSTOMER *customers_getById(unsigned int id) {
-
+	return NULL;
 }
 
 CUSTOMER *customers_getByName(char* name) {
-
+	return NULL;
 }
 
 CUSTOMER *customers_getByEmail(char* email) {
-
+	return NULL;
 }
 
 bool customers_add(CUSTOMER customer) {
-
+	return true;
 }
 
 bool customers_del(CUSTOMER customer) {
-
+	return true;
 }

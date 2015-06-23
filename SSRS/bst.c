@@ -7,8 +7,8 @@
 
 //INTERNAL USE FUNCTION PROTOTYPES.
 bool bst_addBstNode(BST_NODE **node, BST_NODE newNode);
-void bst_countChildsRecur(BST_NODE *node, int *count);
-void bst_getChildsRecur(BST_NODE *node, int *currentIndex, BST_NODE *dataArray);
+void bst_countChildsRecur(BST_NODE *node, unsigned int *count);
+void bst_getChildsRecur(BST_NODE *node, unsigned int *currentIndex, BST_NODE *dataArray, unsigned int maxCount);
 
 bool bst_addNode(BST_NODE **node, char *string, void *data) {
 	BST_NODE nodeData;
@@ -43,6 +43,7 @@ BST_NODE *bst_search(BST_NODE *node,char *string) {
 		return bst_search(node->left, string);
 	if (cmp > 0)
 		return bst_search(node->right, string);
+	return NULL;
 }
 
 //Stores all child nodes in storageLocation and returns count.
@@ -76,7 +77,7 @@ void bst_getChildsRecur(BST_NODE *node, unsigned int *currentIndex, BST_NODE *da
 }
 
 //Frees all memory allocated to a node and its branches.
-bool bst_deallocate(BST_NODE *node) {
+void bst_deallocate(BST_NODE *node) {
 	if (node->left != NULL)
 		bst_deallocate(node->left);
 	if (node->right != NULL)

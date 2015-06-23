@@ -8,7 +8,7 @@ typedef struct {
 	char* email;
 } CUSTOMER;
 
-void customers_init(FILE customer_file);
+void customers_init(char *configFile);
 CUSTOMER *customers_getById(unsigned int id);
 CUSTOMER *customers_getByName(char* name);
 CUSTOMER *customers_getByEmail(char* email);

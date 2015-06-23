@@ -13,5 +13,5 @@ bool bst_addNode(BST_NODE **rootNode, char *string, void *data);
 BST_NODE *bst_search(BST_NODE *node, char *string);
 unsigned int bst_countChilds(BST_NODE *node);
 void bst_getChilds(BST_NODE *node, BST_NODE *storageLocation,unsigned int maxCount);
-bool bst_deallocate(BST_NODE *node);
+void bst_deallocate(BST_NODE *node);
 #endif

@@ -8,10 +8,11 @@
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
 
+COURT courts[COURTS_COUNT];
 char *reservations_file;
 struct {
-	long int length;
-	long int lastID;
+	unsigned long int length;
+	unsigned long int lastID;
 	RESERVATION **data;
 } reservations;
 
@@ -36,17 +37,27 @@ void courts_init(char *reservationsFile){
 }
 
 _Bool courts_load() {
-	RESERVATION *tmpPtr;
+	RESERVATION *tmpPtr = NULL;
 	FILE *file = fopen(reservations_file, "rb");
+	if (file == NULL)
+		return false;
 	reservations_read(&reservations.length, sizeof(long int), 1, file);
+	if (reservations.length == 0)
+		return true;
 	reservations.data = malloc(reservations.length * sizeof(tmpPtr));
-	for (unsigned int i = 0; i < reservations.length; i++) {
+	if (reservations.data == NULL)
+		return false;
+	for (unsigned long int i = 0; i < reservations.length; i++) {
 		tmpPtr = malloc(sizeof(RESERVATION));
+		if (tmpPtr == NULL)
+			return false;
 		reservations_read(tmpPtr, sizeof(RESERVATION), 1, file);
 		reservations.data[i] = tmpPtr;
 		bst_addNode(&courts[tmpPtr->court_id].reservations,utoa(tmpPtr->startTime),tmpPtr);
 	}
+	free(tmpPtr);
 	fclose(file);
+	return true;
 }
 
 _Bool courts_save() {
@@ -63,20 +74,22 @@ char* courts_typeIDStr(int type) {
 		return COURT_NAME_SQUASH;
 	case COURT_TYPE_TENNIS:
 		return COURT_NAME_TENNIS;
+	default:
+		return NULL;
 	}
 }
 
 RESERVATION *courts_getReservation(unsigned int id) {
-
+	return NULL;
 }
 
 unsigned int courts_countCourtReservations(char courtId) {
-	return bst_countChilds(&courts[courtId].reservations);
+	return bst_countChilds(courts[courtId].reservations);
 }
 
 void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned int maxCount) {
 	BST_NODE *tmpArr = malloc(maxCount * sizeof(tmpArr));
-	bst_getChilds(&courts[courtId].reservations,tmpArr,maxCount);
+	bst_getChilds(courts[courtId].reservations,tmpArr,maxCount);
 	for (unsigned int i = 0; i < maxCount; i++) {
 		dataArray[i] = (RESERVATION *)tmpArr[i].data;
 	}
@@ -85,13 +98,13 @@ void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned
 
 RESERVATION *courts_getBlockReservation(char courtId, unsigned int block) {
 	char *blockStr = utoa(block);
-	BST_NODE *node = bst_search(&courts[courtId].reservations, blockStr);
+	BST_NODE *node = bst_search(courts[courtId].reservations, blockStr);
 	free(blockStr);
 	return (RESERVATION *)node->data;
 }
 
 bool courts_checkBlockRange(unsigned int lowerBlock, unsigned int upperBlock) {
-
+	return false;
 }
 
 RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsigned int startTime, unsigned int blockCount) {
@@ -108,18 +121,18 @@ RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsign
 }
 
 bool *courts_delReservation(RESERVATION *reservation) {
-
+	return false;
 }
 
 //Count number of digits in a int;
 unsigned int uintPlaces(unsigned int n) {
-	if (n < 0) return numPlaces((n == INT_MIN) ? INT_MAX : -n);
 	if (n < 10) return 1;
-	return 1 + numPlaces(n / 10);
+	return 1 + uintPlaces(n / 10);
 }
 
 char *utoa(unsigned int num) {
 	unsigned int places = uintPlaces(num);
 	char *string = malloc(places * sizeof(char) + 1);
 	sprintf(string, "%u", num);
+	return string;
 }
