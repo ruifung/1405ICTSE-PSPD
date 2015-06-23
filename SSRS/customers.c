@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tchar.h>
+#include <stdbool.h>
 
 #include "customers.h"
 #include "customers_internal.h"
+#include "bst.h"
 
 //INTERNAL USE FUNCTION PROTOTYPES. External use ones defined in header.
+
+BST_NODE *nameSearch = NULL;
 
 void customers_init(char* configFile) {
 	customer_file = configFile;
@@ -32,8 +35,8 @@ CUSTOMER customers_readcustomer(FILE *file) {
 	//Read fixed size data for single customer.
 	fscanf_s(file, "%u%15c%c%c", &customer.id, &customer.contact_num, &nameLen, &emailLen);
 	//Allocate memory for dynamic sized data.
-	customer.name = malloc(nameLen * sizeof(wchar_t));
-	customer.email = malloc(emailLen * sizeof(wchar_t));
+	customer.name = malloc(nameLen * sizeof(char));
+	customer.email = malloc(emailLen * sizeof(char));
 	//Read dynamic sized data from file.
 	cust_readDynamicLengthString(customer.name, nameLen, file);
 	cust_readDynamicLengthString(customer.email, emailLen, file);
@@ -57,8 +60,8 @@ void customers_savefile() {
 		fwrite(&nameLen, sizeof(char), 1, file);
 		fwrite(&emailLen, sizeof(char), 1, file);
 		//Write dynamic length data.
-		fwrite(customer.name, nameLen * sizeof(wchar_t), 1, file);
-		fwrite(customer.email, emailLen * sizeof(wchar_t), 1, file);
+		fwrite(customer.name, nameLen * sizeof(char), 1, file);
+		fwrite(customer.email, emailLen * sizeof(char), 1, file);
 	}
 	fclose(file);
 }

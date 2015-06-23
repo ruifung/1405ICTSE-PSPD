@@ -4,8 +4,8 @@
 typedef struct {
 	unsigned int id;
 	char contact_num[15];
-	wchar_t* name;
-	wchar_t* email;
+	char* name;
+	char* email;
 } CUSTOMER;
 
 void customers_init(FILE customer_file);
