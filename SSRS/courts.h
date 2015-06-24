@@ -53,5 +53,5 @@ void courts_getCourtReservations(char courtId, RESERVATION **dataArray, uint max
 RESERVATION *courts_getBlockReservation(char courtId, uint block);
 bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
 RESERVATION *courts_addReservation(uint customerId, char courtId, uint startTime, uint blockCount);
-bool *courts_delReservation(RESERVATION *reservation);
+bool courts_delReservation(RESERVATION *reservation);
 #endif // !COURTS_HEADER

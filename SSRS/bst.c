@@ -38,7 +38,7 @@ bool bst_addBstNode(BST_NODE **node, BST_NODE newNode, BST_CMPR cmpr) {
 	}
 	else {
 		//Compares 2 keys using provided compare function
-		int cmp = (*cmpr)(newNode.key, newNode.keylen, (*node)->key, (*node)->keylen);
+		int cmp = cmpr(newNode.key, newNode.keylen, (*node)->key, (*node)->keylen);
 		if (cmp < 0) return bst_addBstNode(&(*node)->left, newNode, cmpr);
 		else if (cmp > 0) return bst_addBstNode(&(*node)->right, newNode, cmpr);
 		else return false;
@@ -51,7 +51,7 @@ BST_NODE *bst_searchStr(BST_NODE *node, char *string) {
 
 BST_NODE *bst_search(BST_NODE *node, void *key, uint keylen, BST_CMPR cmpr) {
 	if (node == NULL) return NULL;
-	int cmp = (*cmpr)(key, keylen, node->key, node->keylen);
+	int cmp = cmpr(key, keylen, node->key, node->keylen);
 	if (cmp == 0)
 		return node;
 	if (cmp < 0) 
@@ -61,16 +61,23 @@ BST_NODE *bst_search(BST_NODE *node, void *key, uint keylen, BST_CMPR cmpr) {
 	return NULL;
 }
 
-//Stores all child nodes in storageLocation and returns count.
+//Counts all childs under node. (Not including node itself.)
 uint bst_countChilds(BST_NODE *node) {
 	uint count = 0;
-	bst_countChildsRecur(node, &count);
+	if(node->left != NULL)
+		bst_countChildsRecur(node->left, &count);
+	if (node->right != NULL)
+		bst_countChildsRecur(node->right, &count);
 	return count;
 }
 
+//Gets all childs under node. (Not including node itself.)
 void bst_getChilds(BST_NODE *node, BST_NODE *storageLocation, uint maxCount) {
 	uint index = 0;
-	bst_getChildsRecur(node, &index, storageLocation, maxCount);
+	if (node->left != NULL)
+		bst_getChildsRecur(node->left, &index, storageLocation, maxCount);
+	if (node->right != NULL)
+		bst_getChildsRecur(node->right, &index, storageLocation, maxCount);
 }
 
 void bst_countChildsRecur(BST_NODE *node, uint *count) {
