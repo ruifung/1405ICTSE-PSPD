@@ -73,6 +73,8 @@
     <ClCompile Include="menu_admin.c" />
     <ClCompile Include="menu_admin_edit.c" />
     <ClCompile Include="menu_admin_select.c" />
+    <ClCompile Include="menu_courts.c" />
+    <ClCompile Include="menu_courts_select.c" />
     <ClCompile Include="menu_guest.c" />
     <ClCompile Include="menu_login.c" />
     <ClCompile Include="menu_staff.c" />
@@ -83,6 +85,7 @@
     <ClInclude Include="conmac.h" />
     <ClInclude Include="courts.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="menu_courts.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="staffs.h" />
   </ItemGroup>

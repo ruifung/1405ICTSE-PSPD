@@ -19,6 +19,9 @@
     <Filter Include="Source Files\menu\admin">
       <UniqueIdentifier>{c57abd65-5419-4875-a6a6-af6fad223adf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\menu\courts">
+      <UniqueIdentifier>{f64409d1-09a3-496d-aa9f-0e9ef7bbeecc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="menu_guest.c">
@@ -51,6 +54,12 @@
     <ClCompile Include="bst.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menu_courts.c">
+      <Filter>Source Files\menu\courts</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_courts_select.c">
+      <Filter>Source Files\menu\courts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu.h">
@@ -72,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_courts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

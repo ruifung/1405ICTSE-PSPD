@@ -99,7 +99,7 @@ bool menu_staff_callback(UINT index){
 	if (logged_staff->admin) index -= 1;
 	switch (index){
 	case 0:
-		return true;
+		menu_switch(menu_courts());
 		break;
 	case 2:
 		if (confirm("Are you sure to logout?")){

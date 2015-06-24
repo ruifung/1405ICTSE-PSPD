@@ -40,6 +40,12 @@ typedef struct {
 	uint blockCount;
 } RESERVATION;
 
+typedef struct {
+	uint ref_num;
+	char customer[65];
+	time_t date; // of bill
+};
+
 extern COURT courts[COURTS_COUNT];
 
 void courts_init(char *);
