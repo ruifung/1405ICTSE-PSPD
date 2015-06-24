@@ -229,6 +229,7 @@ RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsign
 	RESERVATION **newData = realloc(reservations.data, ++reservations.length * sizeof(rsvp));
 	if (newData == NULL) return NULL;
 	reservations.data[reservations.length - 1] = rsvp;
+	bst_addNode(courts[courtId].reservations, &startTime, sizeof(startTime), rsvp, &courts_cmpr);
 	return rsvp;
 }
 
