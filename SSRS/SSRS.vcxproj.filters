@@ -51,9 +51,6 @@
     <ClCompile Include="customers.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bst.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="bst.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="customers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

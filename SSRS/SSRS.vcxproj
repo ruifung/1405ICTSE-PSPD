@@ -67,7 +67,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bst.c" />
-    <ClCompile Include="bst.h" />
+    <ClInclude Include="bst.h" />
     <ClCompile Include="courts.c" />
     <ClCompile Include="customers.c" />
     <ClCompile Include="main.c" />
