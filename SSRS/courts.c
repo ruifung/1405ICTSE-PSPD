@@ -42,7 +42,11 @@ void courts_init(char *reservationsFile){
 	courts[9] = (COURT){ 9,  COURT_TYPE_FUTSAL, 'A', 14, 44, 20.0f, NULL };
 	courts[10] = (COURT){ 10, COURT_TYPE_FUTSAL, 'B', 14, 44, 20.0f, NULL };
 	courts[11] = (COURT){ 11, COURT_TYPE_FUTSAL, 'C', 14, 44, 20.0f, NULL };
+	reservations.lastID = 0;
+	reservations.length = 0;
+	reservations.data = NULL;
 	reservations_file = reservationsFile;
+	courts_load();
 }
 
 _Bool courts_load() {
