@@ -34,7 +34,7 @@ typedef struct {
 
 typedef struct {
 	uint id;
-	uint customer_id;
+	uint ref_num;
 	char court_id;
 	uint startTime;
 	uint blockCount;
@@ -52,6 +52,10 @@ uint courts_countCourtReservations(char courtId);
 void courts_getCourtReservations(char courtId, RESERVATION **dataArray, uint maxCount);
 RESERVATION *courts_getBlockReservation(char courtId, uint block);
 bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
-RESERVATION *courts_addReservation(uint customerId, char courtId, uint startTime, uint blockCount);
+RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount);
 bool courts_delReservation(RESERVATION *reservation);
+
+uint courts_newRefNum();
+uint courts_countRefReservations(uint ref);
+void courts_getRefReservations(uint ref, RESERVATION **dataArray, uint arraySize);
 #endif // !COURTS_HEADER

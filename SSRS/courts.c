@@ -223,10 +223,10 @@ bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBl
 	return left || right;
 }
 
-RESERVATION *courts_addReservation(unsigned int customerId, char courtId, unsigned int startTime, unsigned int blockCount) {
+RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount) {
 	RESERVATION *rsvp = malloc(sizeof(RESERVATION));
 	rsvp->id = ++reservations.lastID;
-	rsvp->customer_id = customerId;
+	rsvp->ref_num = ref_num;
 	rsvp->court_id = courtId;
 	rsvp->startTime = startTime;
 	rsvp->blockCount = blockCount;
