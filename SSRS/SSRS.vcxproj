@@ -69,7 +69,6 @@
     <ClCompile Include="bst.c" />
     <ClInclude Include="bst.h" />
     <ClCompile Include="courts.c" />
-    <ClCompile Include="customers.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="menu_admin.c" />
     <ClCompile Include="menu_admin_edit.c" />
@@ -83,7 +82,6 @@
     <ClInclude Include="admin.h" />
     <ClInclude Include="conmac.h" />
     <ClInclude Include="courts.h" />
-    <ClInclude Include="customers.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="staffs.h" />
