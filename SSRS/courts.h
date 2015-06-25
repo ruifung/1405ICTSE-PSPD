@@ -75,7 +75,8 @@ bool courts_delReservation(RESERVATION *reservation);
 
 //NOTE: ref num will never be 0.
 //THIS FUNCTION WILL RETURN A ZERO-ED RSVP_REF ON FAILURE.
-RSVP_REF *courts_newRefNum(char *custName, time_t date);
+RSVP_REF *courts_newRef(char *custName, time_t date);
+void courts_delRef(uint ref);
 RSVP_REF *courts_getRefItem(uint ref);
 uint courts_countRefReservations(uint ref);
 #endif // !COURTS_HEADER

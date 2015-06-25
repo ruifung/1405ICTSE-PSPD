@@ -26,7 +26,6 @@ struct {
 	RSVP_REF *rsvpRef;
 } references;
 
-void utoa(unsigned int uint, char *byteArray);
 _Bool courts_load();
 _Bool courts_save();
 uint courts_getFirstBlockSlot(uint block, char courtId);
@@ -35,6 +34,7 @@ bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBl
 uint courts_getReservationIndex(uint id);
 void courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item);
 int courts_cmprRef(const RSVP_REF *item1, const RSVP_REF *item2);
+uint courts_getRefItemIndex(uint ref);
 
 void courts_init(char *reservationsFile){
 	courts[0] = (COURT){ 0, COURT_TYPE_BATMINTON, 'A', 14, 44, 8.0f, NULL };
@@ -270,6 +270,8 @@ bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBl
 }
 
 RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount) {
+	RSVP_REF *ref = courts_getRefItem(ref_num);
+	if (ref == NULL) return NULL;
 	RESERVATION *rsvp = malloc(sizeof(RESERVATION));
 	rsvp->id = ++reservations.lastID;
 	rsvp->ref_num = ref_num;
@@ -280,6 +282,7 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 	if (newData == NULL) return NULL;
 	reservations.data[reservations.length - 1] = rsvp;
 	bst_addNode(&courts[courtId].reservations, &startTime, sizeof(startTime), rsvp, &courts_cmpr);
+	courts_refLinkRecur(&ref->list,NULL,rsvp);
 	return rsvp;
 }
 
@@ -305,7 +308,21 @@ bool courts_delReservation(RESERVATION *reservation) {
 			}
 		}
 	}
-	else return false;
+	//Handle reference numbers
+	RSVP_REF *ref = courts_getRefItem(reservation->ref_num);
+	if (ref != NULL) {
+		RSVP_LINK *linkItem = ref->list;
+		if (linkItem->item->id == reservation->id) {
+			if (linkItem->next != NULL)
+				linkItem->next->prev = linkItem->prev;
+			if (linkItem->prev != NULL)
+				linkItem->prev->next = linkItem->next;
+			else {
+				ref->list = linkItem->next;
+			}
+			free(linkItem);
+		}
+	}
 	//Look for reservation in global reservation array.
 	uint index = courts_getReservationIndex(reservation->id);
 	if (index == 0) {
@@ -347,7 +364,7 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 }
 
 //Due to this function, there will never be a ref num of 0;
-RSVP_REF *courts_newRefNum(char *custName, time_t date) {
+RSVP_REF *courts_newRef(char *custName, time_t date) {
 	uint ref = ++references.lastRef;
 	RSVP_REF refItem = { 0 };
 	RSVP_REF *tmpArr = realloc(references.rsvpRef, ++references.refLen * sizeof(RSVP_REF));
@@ -362,7 +379,43 @@ RSVP_REF *courts_newRefNum(char *custName, time_t date) {
 	references.rsvpRef = tmpArr;
 	return &references.rsvpRef[references.refLen - 1];
 }
+
+void courts_delRef(uint ref_num) {
+	uint index = courts_getRefItemIndex(ref_num);
+	RSVP_REF *ref = &references.rsvpRef[index];
+	RSVP_LINK *linkItem,*tmpLink = NULL;
+	if (ref->ref_num != ref_num)
+		return;
+	linkItem = ref->list;
+	//Walk the linked list to the end.
+	while (linkItem != NULL) {
+		if (linkItem->next != NULL)
+			linkItem = linkItem->next;
+		else
+			break;
+	}
+	//Walk it in reverse, freeing it as it goes along.
+	while (linkItem != NULL) {
+		tmpLink = linkItem;
+		if (linkItem->prev != NULL)
+			linkItem = linkItem->prev;
+		free(tmpLink);
+	}
+	for (uint i = index; i < references.refLen; i++) {
+
+	}
+}
+
 RSVP_REF *courts_getRefItem(uint ref) {
+	uint index = courts_getRefItemIndex(ref);
+	if (index == 0) {
+		if (references.rsvpRef[index].ref_num != ref) 
+			return NULL;
+	}
+	return &references.rsvpRef[index];
+}
+
+uint courts_getRefItemIndex(uint ref) {
 	uint upperIndex = references.refLen - 1;
 	uint lowerIndex = 0;
 	uint middle;
@@ -373,12 +426,12 @@ RSVP_REF *courts_getRefItem(uint ref) {
 		else if (references.rsvpRef[middle].ref_num > ref)
 			upperIndex = middle - 1;
 		else if (references.rsvpRef[middle].ref_num == ref)
-			return &references.rsvpRef[middle];
+			return middle;
 		//If lowerIndex == upperIndex... nothing left to search.
 		else if (lowerIndex == upperIndex)
 			break;
 	}
-	return NULL;
+	return 0;
 }
 uint courts_countRefReservations(uint ref) {
 	uint count = 0;
