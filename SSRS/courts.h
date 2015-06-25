@@ -44,6 +44,7 @@ typedef struct RSVP_LINK RSVP_LINK;
 struct RSVP_REF {
 	uint ref_num;
 	time_t date;
+	uint staff_id;
 	char *customerName;
 	RSVP_LINK *list;
 };
@@ -75,7 +76,7 @@ bool courts_delReservation(RESERVATION *reservation);
 
 //NOTE: ref num will never be 0.
 //THIS FUNCTION WILL RETURN A ZERO-ED RSVP_REF ON FAILURE.
-RSVP_REF *courts_newRef(char *custName, time_t date);
+RSVP_REF *courts_newRef(char *custName, time_t date, uint staff_id);
 void courts_delRef(uint ref);
 RSVP_REF *courts_getRefItem(uint ref);
 uint courts_countRefReservations(uint ref);

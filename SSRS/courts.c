@@ -86,6 +86,7 @@ _Bool courts_load() {
 		uint nameLen = 0;
 		reservations_read(&tmpRef.ref_num, sizeof(uint), 1, file);
 		reservations_read(&tmpRef.date, sizeof(time_t), 1, file);
+		reservations_read(&tmpRef.staff_id, sizeof(uint), 1, file);
 		reservations_read(&nameLen, sizeof(uint), 1, file);
 		tmpRef.customerName = malloc(nameLen);
 		reservations_read(tmpRef.customerName, nameLen, 1, file);
@@ -143,6 +144,7 @@ _Bool courts_save() {
 		uint nameLen = (strlen(references.rsvpRef[i].customerName) + 1) * sizeof(char);
 		fwrite(&references.rsvpRef[i].ref_num, sizeof(uint), 1, file);
 		fwrite(&references.rsvpRef[i].date, sizeof(time_t), 1, file);
+		fwrite(&references.rsvpRef[i].staff_id, sizeof(uint), 1, file);
 		fwrite(&nameLen, sizeof(uint), 1, file);
 		fwrite(references.rsvpRef[i].customerName, nameLen, 1, file);
 	}
@@ -375,8 +377,8 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 }
 
 //Due to this function, there will never be a ref num of 0;
-RSVP_REF *courts_newRef(char *custName, time_t date) {
-	uint ref = ++references.lastRef;
+RSVP_REF *courts_newRef(char *custName, time_t date, uint staff_id) {
+	uint ref_num = ++references.lastRef;
 	uint nameLen = (strlen(custName) + 1) * sizeof(char);
 	char *custName2 = malloc(nameLen);
 	RSVP_REF refItem = { 0 };
@@ -388,7 +390,7 @@ RSVP_REF *courts_newRef(char *custName, time_t date) {
 		references.refLen--;
 		return NULL;
 	}
-	refItem = (RSVP_REF) {ref,date,custName2,NULL};
+	refItem = (RSVP_REF) { ref_num, date, staff_id, custName2, NULL };
 	tmpArr[references.refLen - 1] = refItem;
 	references.rsvpRef = tmpArr;
 	return &references.rsvpRef[references.refLen - 1];
