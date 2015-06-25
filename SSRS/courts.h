@@ -39,10 +39,6 @@ typedef struct {
 	uint blockCount;
 } RESERVATION;
 
-typedef struct {
-	uint ref_num;
-	 // of bill
-} RECEIPT;
 typedef struct RSVP_REF RSVP_REF;
 typedef struct RSVP_LINK RSVP_LINK;
 struct RSVP_REF {
