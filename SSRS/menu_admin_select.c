@@ -41,7 +41,8 @@ void menu_admin_selelect_pre(){
 		sprintf(itm.name, "%04d: %s", staffs.data[start].id, staffs.data[start].username);
 		menu_add_item(m_admin_sel, itm);
 	}
-	if (end < staffs.length - 2)menu_add_item(m_admin_sel, sci_item("Next Page", &menu_admin_select_next));
+	if (staffs.length != 1 && end < staffs.length - 2)
+		menu_add_item(m_admin_sel, sci_item("Next Page", &menu_admin_select_next));
 }
 
 bool menu_admin_select_back(UINT index){

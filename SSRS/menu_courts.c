@@ -5,8 +5,10 @@
 #include <Windows.h>
 
 #include "simcon.h"
+#include "courts.h"
 #include "menu.h"
 #include "menu_courts.h"
+#include "booking.h"
 
 SCI_MENU * m_courts = NULL;
 
@@ -27,9 +29,19 @@ SCI_MENU * menu_courts(){
 
 bool menu_courts_callback(UINT index){
 	switch (index){
-	case 0: case 1:
+	case 0:
 		courts_action = index; // 0 is check availability, 1 is place booking, same as defined macro
 		menu_switch(menu_courts_select());
+		break;
+	case 1:
+		printf("Customer name: ");
+		getstr(booking_cache.customer, 65, 0, false);
+		if (strlen(booking_cache.customer) == 0){
+			printf("Invalid customer name!\n");
+			pause();
+			return true;
+		}
+		menu_switch(menu_courts_book());
 		break;
 	case 2:
 		// just find and check the receipt by reference number from files,
