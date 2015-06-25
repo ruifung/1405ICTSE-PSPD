@@ -67,7 +67,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bst.c" />
-    <ClInclude Include="booking.h" />
     <ClInclude Include="bst.h" />
     <ClCompile Include="courts.c" />
     <ClCompile Include="main.c" />
