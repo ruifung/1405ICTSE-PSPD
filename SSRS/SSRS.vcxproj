@@ -86,6 +86,7 @@
     <ClInclude Include="admin.h" />
     <ClInclude Include="conmac.h" />
     <ClInclude Include="courts.h" />
+    <ClInclude Include="lang.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="menu_courts.h" />
     <ClInclude Include="resource.h" />

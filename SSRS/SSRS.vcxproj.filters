@@ -92,6 +92,9 @@
     <ClInclude Include="booking.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SSRS.rc">
