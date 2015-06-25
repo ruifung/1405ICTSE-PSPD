@@ -69,7 +69,7 @@ RESERVATION *courts_getReservation(uint id);
 uint courts_countCourtReservations(char courtId);
 void courts_getCourtReservations(char courtId, RESERVATION **dataArray, uint maxCount);
 RESERVATION *courts_getBlockReservation(char courtId, uint block);
-bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
+bool courts_isBlockRangeEmpty(char courtId, uint lowerBlock, uint upperBlock);
 RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount);
 bool courts_delReservation(RESERVATION *reservation);
 
