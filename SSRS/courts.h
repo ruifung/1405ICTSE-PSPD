@@ -48,8 +48,8 @@ typedef struct RSVP_REF RSVP_REF;
 typedef struct RSVP_LINK RSVP_LINK;
 struct RSVP_REF {
 	uint ref_num;
-	char *customerName;
 	time_t date;
+	char *customerName;
 	RSVP_LINK *list;
 };
 struct RSVP_LINK {
@@ -73,8 +73,9 @@ bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
 RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount);
 bool courts_delReservation(RESERVATION *reservation);
 
-RSVP_REF courts_newRefNumt(char *custName, time_t date);
-RSVP_REF courts_getRefItem(uint ref);
+//NOTE: ref num will never be 0.
+//THIS FUNCTION WILL RETURN A ZERO-ED RSVP_REF ON FAILURE.
+RSVP_REF *courts_newRefNum(char *custName, time_t date);
+RSVP_REF *courts_getRefItem(uint ref);
 uint courts_countRefReservations(uint ref);
-void courts_getRefReservations(uint ref, RESERVATION **dataArray, uint arraySize);
 #endif // !COURTS_HEADER

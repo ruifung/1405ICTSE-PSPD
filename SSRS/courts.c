@@ -55,7 +55,6 @@ void courts_init(char *reservationsFile){
 	reservations.length = 0;
 	reservations.data = NULL;
 	reservations_file = reservationsFile;
-	courts_load();
 }
 
 _Bool courts_load() {
@@ -73,8 +72,23 @@ _Bool courts_load() {
 	FILE *file = fopen(reservations_file, "rb");
 	if (file == NULL)
 		return false;
+	//Load reference number data
+	reservations_read(&references.lastRef, sizeof(uint), 1, file);
+	reservations_read(&references.refLen, sizeof(uint), 1, file);
+	references.rsvpRef = malloc(references.refLen * sizeof(RSVP_REF));
+	for (uint i = 0; i < references.refLen; i++) {
+		RSVP_REF tmpRef = { 0 };
+		uint nameLen = 0;
+		reservations_read(&tmpRef.ref_num, sizeof(uint), 1, file);
+		reservations_read(&tmpRef.date, sizeof(time_t), 1, file);
+		reservations_read(&nameLen, sizeof(uint), 1, file);
+		tmpRef.customerName = malloc(nameLen);
+		reservations_read(tmpRef.customerName, nameLen, 1, file);
+		tmpRef.list = NULL;
+		references.rsvpRef[i] = tmpRef;
+	}
+	//Load reservations
 	reservations_read(&reservations.lastID, sizeof(uint), 1, file);
-	reservations_read(&references, sizeof(references), 1, file);
 	reservations_read(&reservations.length, sizeof(uint), 1, file);
 	references.rsvpRef = malloc(references.refLen * sizeof(references.refLen));
 	reservations.data = malloc(reservations.length * sizeof(tmpPtr));
@@ -82,7 +96,7 @@ _Bool courts_load() {
 		return true;
 	if (reservations.data == NULL)
 		return false;
-	for (unsigned long int i = 0; i < reservations.length; i++) {
+	for (uint i = 0; i < reservations.length; i++) {
 		refSet = false;
 		tmpPtr = malloc(sizeof(RESERVATION));
 		if (tmpPtr == NULL)
@@ -90,24 +104,9 @@ _Bool courts_load() {
 		reservations_read(tmpPtr, sizeof(RESERVATION), 1, file);
 		reservations.data[i] = tmpPtr;
 		bst_addNode(&courts[tmpPtr->court_id].reservations,&(tmpPtr->startTime),sizeof(uint),tmpPtr,&courts_cmpr);
-		for (uint i = 0; i < refCurLen; i++) {
-			if (references.rsvpRef[i].ref_num == tmpPtr->ref_num) {
-				courts_refLinkRecur(&references.rsvpRef[i].list, NULL, tmpPtr);
-				refSet = true;
-				break;
-			}
-		}
-		if (!refSet) {
-			RSVP_REF newRef;
-			newRef.list = NULL;
-			newRef.ref_num = tmpPtr->ref_num;
-			courts_refLinkRecur(&newRef.list, NULL, tmpPtr);
-			RSVP_REF *tmpRef = realloc(references.rsvpRef, ++refCurLen * sizeof(RSVP_REF));
-			if (tmpRef == NULL)
-				return false;
-			references.rsvpRef = tmpRef;
-			references.rsvpRef[refCurLen - 1] = newRef;
-		}
+		RSVP_REF *ref = courts_getRefItem(tmpPtr->ref_num);
+		if (ref == NULL) return false;
+		courts_refLinkRecur(&ref->list, NULL, tmpPtr);
 	}
 	qsort(references.rsvpRef, references.refLen, sizeof(RSVP_REF), &courts_cmprRef);
 	free(tmpPtr);
@@ -127,6 +126,18 @@ _Bool courts_save() {
 	FILE *file = fopen(reservations_file, "wb");
 	if (file == NULL)
 		return false;
+	//Save reference number data
+	fwrite(&references.lastRef, sizeof(uint), 1, file);
+	fwrite(&references.refLen, sizeof(uint), 1, file);
+	references.rsvpRef = malloc(references.refLen * sizeof(RSVP_REF));
+	for (uint i = 0; i < references.refLen; i++) {
+		uint nameLen = (strlen(references.rsvpRef[i].customerName) + 1) * sizeof(char);
+		fwrite(&references.rsvpRef[i].ref_num, sizeof(uint), 1, file);
+		fwrite(&references.rsvpRef[i].date, sizeof(time_t), 1, file);
+		fwrite(&nameLen, sizeof(uint), 1, file);
+		fwrite(references.rsvpRef[i].customerName, nameLen, 1, file);
+	}
+	//Save reservation data
 	fwrite(&reservations.lastID, sizeof(uint), 1, file);
 	fwrite(&references, sizeof(references), 1, file);
 	fwrite(&reservations.length, sizeof(uint), 1, file);
@@ -166,8 +177,9 @@ RESERVATION *courts_getReservation(uint id) {
 uint courts_getReservationIndex(uint id) {
 	uint upperIndex = reservations.length - 1;
 	uint lowerIndex = 0;
-	uint middle, cmpr;
-	while (lowerIndex) {
+	uint middle;
+	int cmpr;
+	while (true) {
 		middle = lowerIndex + ((upperIndex - lowerIndex) / 2);
 		cmpr = id - reservations.data[middle]->id;
 		if (cmpr > 0)
@@ -335,23 +347,52 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 }
 
 //Due to this function, there will never be a ref num of 0;
-RSVP_REF courts_newRefNumt(char *custName, time_t date) {
+RSVP_REF *courts_newRefNum(char *custName, time_t date) {
 	uint ref = ++references.lastRef;
+	RSVP_REF refItem = { 0 };
 	RSVP_REF *tmpArr = realloc(references.rsvpRef, ++references.refLen * sizeof(RSVP_REF));
+	//IF FAILED TO EXTEND ARRAY, UNDO INCREMENTS AND RETURN
 	if (tmpArr == NULL) {
 		references.lastRef--;
 		references.refLen--;
-		return 0;
+		return NULL;
 	}
-	tmpArr[references.refLen - 1] = (RSVP_REF) {ref,NULL,};
+	refItem = (RSVP_REF) {ref,date,custName,NULL};
+	tmpArr[references.refLen - 1] = refItem;
 	references.rsvpRef = tmpArr;
-	return ref;
+	return &references.rsvpRef[references.refLen - 1];
+}
+RSVP_REF *courts_getRefItem(uint ref) {
+	uint upperIndex = references.refLen - 1;
+	uint lowerIndex = 0;
+	uint middle;
+	while (lowerIndex) {
+		middle = lowerIndex + ((upperIndex - lowerIndex) / 2);
+		if (references.rsvpRef[middle].ref_num < ref)
+			lowerIndex = middle + 1;
+		else if (references.rsvpRef[middle].ref_num > ref)
+			upperIndex = middle - 1;
+		else if (references.rsvpRef[middle].ref_num == ref)
+			return &references.rsvpRef[middle];
+		//If lowerIndex == upperIndex... nothing left to search.
+		else if (lowerIndex == upperIndex)
+			break;
+	}
+	return NULL;
 }
 uint courts_countRefReservations(uint ref) {
-
-}
-void courts_getRefReservations(uint ref, RESERVATION **dataArray, uint arraySize) {
-
+	uint count = 0;
+	RSVP_LINK *curLink = NULL;
+	RSVP_REF *refItem = courts_getRefItem(ref);
+	if (refItem == NULL) {
+		return 0;
+	}
+	curLink = refItem->list;
+	while (curLink != NULL) {
+		count++;
+		curLink = curLink->next;
+	}
+	return count;
 }
 
 void courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item) {
