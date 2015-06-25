@@ -174,6 +174,6 @@ void book_slot(uint slot){
 	printf("Amount: RM %.2f\n", price);
 	printf("\nNote: An additional 20%% will be charged for those slot during peak hours(on 5PM onwards daily).\n");
 	if (confirm("Confirm add this into booking list?")){
-		courts_addReservation(pending->ref_num, courts_selected, block, duration);
+		RESERVATION *rsvp = courts_addReservation(pending->ref_num, courts_selected, block, duration);
 	}
 }

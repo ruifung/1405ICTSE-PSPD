@@ -411,7 +411,7 @@ void courts_delRef(uint ref_num) {
 		return;
 	linkItem = ref->list;
 	//Walk the linked list to the end.
-	while (linkItem != NULL) {
+	for (;;) {
 		if (linkItem->next != NULL)
 			linkItem = linkItem->next;
 		else
@@ -420,8 +420,7 @@ void courts_delRef(uint ref_num) {
 	//Walk it in reverse, freeing it as it goes along.
 	while (linkItem != NULL) {
 		tmpLink = linkItem;
-		if (linkItem->prev != NULL)
-			linkItem = linkItem->prev;
+		linkItem = linkItem->prev;
 		free(tmpLink);
 	}
 	//Shift all array elements right of item to the left by 1
