@@ -92,7 +92,7 @@ void print_slots(){
 	bool available;
 	for (uint i = 0; i < half; i++){
 		t = (block + i) * BLOCK_DURATION;
-		available = courts_getBlockReservation(courts_selected, block + i);
+		available = courts_getBlockReservation(courts_selected, block + i) == NULL;
 		strftime(cache[0], 6, "%H:%M", localtime(&t));
 		t = (block + i + 1) * BLOCK_DURATION;
 		strftime(cache[1], 6, "%H:%M", localtime(&t));
@@ -100,7 +100,7 @@ void print_slots(){
 		int h = half + i;
 		if (court->startBlock + h < court->endBlock){
 			t = (block + h) * BLOCK_DURATION;
-			available = courts_getBlockReservation(courts_selected, block + h);
+			available = courts_getBlockReservation(courts_selected, block + h) == NULL;
 			strftime(cache[0], 6, "%H:%M", localtime(&t));
 			t = (block + h + 1) * BLOCK_DURATION;
 			strftime(cache[1], 6, "%H:%M", localtime(&t));

@@ -55,7 +55,7 @@ bool menu_courts_book_callback(UINT index){
 					s_str, e_str, courts[rsvp->item->court_id].rate,
 					amount);
 				rsvp = rsvp->next;
-			} while (rsvp);
+			} while (rsvp != NULL);
 		} else {
 			printf("No any bookings yet.\n");
 		}
