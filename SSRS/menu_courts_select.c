@@ -35,11 +35,17 @@ bool menu_courts_sel_callback(UINT index){
 	courts_selected = index;
 	date_selected = time(NULL); // get the time_t which represent the time now
 	printf("Please select a date:");
-	struct tm * date = localtime(&date_selected);
+	struct tm * date = localtime(&date_selected), today;
 	date->tm_hour = 0;
 	date->tm_min = 0;
 	date->tm_sec = 0;
+	memmove(&today, date, sizeof(struct tm));
 	getdate(date, false);
+	if (mktime(date) < mktime(&today) && courts_action == COURTS_ACTION_PLACE){
+		printf("You can't book from a date before today!\n");
+		pause();
+		return true;
+	}
 	return false;
 }
 
