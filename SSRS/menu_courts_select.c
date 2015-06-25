@@ -116,15 +116,15 @@ void check_slot(uint slot){
 	if (res != NULL){
 		char cache[6];
 		RSVP_REF * ref = courts_getRefItem(res->ref_num);
-		printf("Customer Name:  %s\n", ref->customerName);
-		printf("Reference Code: %08X", ref->ref_num);
+		printf("Customer Name: %s\n", ref->customerName);
+		printf("Bill Code:     %08X", ref->ref_num);
 		time_t t = res->startTime * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(&t));
-		printf("Start Time:     %s\n", cache);
+		printf("Start Time:    %s\n", cache);
 		t = (res->startTime + res->blockCount + 1) * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(&t));
-		printf("End Time:       %s\n", cache);
-		printf("Duration:       %d hour(s) %d minute(s)\n",
+		printf("End Time:      %s\n", cache);
+		printf("Duration:      %d hour(s) %d minute(s)\n",
 			res->blockCount / 2, (res->blockCount % 1) * 30);
 	} else {
 		printf("This slot is currently empty.\n");
@@ -166,6 +166,7 @@ void book_slot(uint slot){
 	strftime(e_str, 6, "%H:%M", localtime(&end));
 	strftime(d_str, 11, "%Y-%m-%d", localtime(&start));
 	printf("\nDate:          %s\n", d_str);
+	printf("Court:         %s Court %c", courts_typeIDStr(c_sel->id), c_sel->label);
 	printf("Start Time:    %s\n", s_str);
 	printf("End Time:      %s\n", e_str);
 	printf("Duration:      %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);

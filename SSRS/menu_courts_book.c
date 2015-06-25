@@ -49,7 +49,7 @@ bool menu_courts_book_callback(UINT index){
 			pause();
 			return true;
 		};
-		//courts_save();
+		//courts_save(); wont save until ruifung fix it
 		clrscr;
 		courts_printRefReceipt(stdout, pending->ref_num);
 		if (confirm("\nDo you wish to print out the receipt?")){

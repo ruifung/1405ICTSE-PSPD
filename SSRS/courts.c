@@ -556,6 +556,6 @@ bool courts_printRefDetails(FILE * file, uint ref_num){
 		rsvp = rsvp->next;
 	} while (rsvp != NULL);
 	fprintf(file, "====================================================================\n");
-	fprintf(file, "%48s%10s%9.2f\n", "", "Total:", total);
+	fprintf(file, "%48s%10s%10.2f\n", "", "Total:", total);
 	return true;
 }

@@ -47,9 +47,37 @@ bool menu_courts_callback(UINT index){
 		menu_switch(menu_courts_book());
 		break;
 	case 2:
-		// just find and check the receipt by reference number from files,
-		// my idea is save the receipts which generated into files in same folder
-		// and the name is the ref no. so that we no need to handle the search by ourselves.
+		printf("Please enter the bill code for check:");
+		char code[9] = "";
+		getstr(code, 9, 0, false);
+		char cache = 0;
+		uint ref_num;
+		if (sscanf(code, "%x%c", &ref_num, &cache) != 1){
+			printf("Invalid bill code!\n");
+			pause();
+			return true;
+		}
+		RSVP_REF * ref = courts_getRefItem(ref_num);
+		if (ref == NULL){
+			printf("This code doesn't exist!\n");
+			pause();
+			return true;
+		}
+		courts_printRefReceipt(stdout, ref->ref_num);
+		if (confirm("\nDo you wish to print out the receipt?")){
+			system("if not exist \"receipts\" (mkdir receipts>nul)");
+			char path[22];
+			char cmd[36];
+			sprintf(path, "receipts/%08X.txt", ref->ref_num);
+			FILE * file_ptr = fopen(path, "w");
+			if (file_ptr != NULL){
+				courts_printRefReceipt(file_ptr, ref->ref_num);
+				fclose(file_ptr);
+				sprintf(cmd, "notepad \"%s\">nul", path);
+				system(cmd);
+			}
+			else _pause("ERROR: Failed to create %s", path);
+		}
 		break;
 	case 3:
 		menu_switch(menu_staff());
