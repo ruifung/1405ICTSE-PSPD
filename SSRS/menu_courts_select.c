@@ -10,7 +10,6 @@
 #include "courts.h"
 #include "menu_courts.h"
 #include "conmac.h"
-#include "booking.h"
 
 SCI_MENU * m_courts_sel = NULL;
 
@@ -93,19 +92,19 @@ void print_slots(){
 	bool available;
 	for (uint i = 0; i < half; i++){
 		t = (block + i) * BLOCK_DURATION;
-		available = courts_getBlockReservation(courts_selected, block + i) == NULL;
+		available = courts_getBlockReservation(courts_selected, block + i);
 		strftime(cache[0], 6, "%H:%M", localtime(&t));
 		t = (block + i + 1) * BLOCK_DURATION;
 		strftime(cache[1], 6, "%H:%M", localtime(&t));
-		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Empty" : "Not Available");
+		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Empty" : "Reserved");
 		int h = half + i;
 		if (court->startBlock + h < court->endBlock){
 			t = (block + h) * BLOCK_DURATION;
-			available = courts_getBlockReservation(courts_selected, block + h) == NULL;
+			available = courts_getBlockReservation(courts_selected, block + h);
 			strftime(cache[0], 6, "%H:%M", localtime(&t));
 			t = (block + h + 1) * BLOCK_DURATION;
 			strftime(cache[1], 6, "%H:%M", localtime(&t));
-			printf("%2d. %s to %s - %-13s\n", h + 1, cache[0], cache[1], available ? "Empty" : "Not Available");
+			printf("%2d. %s to %s - %-13s\n", h + 1, cache[0], cache[1], available ? "Empty" : "Reserved");
 		}
 	}
 }
@@ -167,9 +166,6 @@ void book_slot(uint slot){
 	printf("Amount: RM %.2f", price);
 	printf("\nNote: An additional 20%% will be charged for those slot during peak hours(on 5PM onwards daily).\n");
 	if (confirm("Confirm add this into booking list?")){
-		RESERVATION * r = &booking_cache.reservations[++booking_cache.count];
-		r->court_id = courts_selected;
-		r->startTime = block;
-		r->blockCount = duration;
+		courts_addReservation(pending->ref_num, courts_selected, block, duration);
 	}
 }

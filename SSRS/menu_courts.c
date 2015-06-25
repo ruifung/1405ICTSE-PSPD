@@ -3,12 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 #include <Windows.h>
+#include <time.h>
 
 #include "simcon.h"
 #include "courts.h"
 #include "menu.h"
 #include "menu_courts.h"
-#include "booking.h"
 
 SCI_MENU * m_courts = NULL;
 
@@ -34,14 +34,15 @@ bool menu_courts_callback(UINT index){
 		menu_switch(menu_courts_select());
 		break;
 	case 1:
-		booking_cache.count = 0;
 		printf("Customer name: ");
-		getstr(booking_cache.customer, 65, 0, false);
-		if (strlen(booking_cache.customer) == 0){
+		char customer[65] = "";
+		getstr(customer, 65, 0, false);
+		if (strlen(customer) == 0){
 			printf("Invalid customer name!\n");
 			pause();
 			return true;
 		}
+		pending = courts_newRef(customer, time(NULL));
 		menu_switch(menu_courts_book());
 		break;
 	case 2:
