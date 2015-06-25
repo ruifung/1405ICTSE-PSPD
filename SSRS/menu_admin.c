@@ -109,7 +109,7 @@ void admin_add_staff(){
 		return;
 	}
 	if (strlen(pwd1) < 8){
-		printf("\nUsername must atleast 8 characters!\n");
+		printf("\nPassword must be at least 8 characters!\n");
 		pause();
 		return;
 	}
