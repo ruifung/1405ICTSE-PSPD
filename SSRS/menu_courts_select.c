@@ -46,6 +46,12 @@ bool menu_courts_sel_callback(UINT index){
 		pause();
 		return true;
 	}
+	if (date->tm_wday == 1){ // 0 is sunday, 6 is saturday
+		printf("Sorry, Monday is not available for any booking.\n");
+		pause();
+		return true;
+	}
+
 	return false;
 }
 
