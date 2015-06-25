@@ -283,14 +283,18 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 	RSVP_REF *ref = courts_getRefItem(ref_num);
 	if (ref == NULL) return NULL;
 	RESERVATION *rsvp = malloc(sizeof(RESERVATION));
+	if (rsvp == NULL) return NULL;
 	rsvp->id = ++reservations.lastID;
 	rsvp->ref_num = ref_num;
 	rsvp->court_id = courtId;
 	rsvp->startTime = startTime;
 	rsvp->blockCount = blockCount;
 	RESERVATION **newData = realloc(reservations.data, ++reservations.length * sizeof(rsvp));
-	if (newData == NULL) return NULL;
-	reservations.data[reservations.length - 1] = rsvp;
+	if (newData == NULL) {
+		free(rsvp);
+		return NULL;
+	}
+	reservations.data[(++reservations.length) - 1] = rsvp;
 	bst_addNode(&courts[courtId].reservations, &startTime, sizeof(startTime), rsvp, &courts_cmpr);
 	courts_refLinkRecur(&ref->list,NULL,rsvp);
 	return rsvp;
@@ -381,6 +385,8 @@ RSVP_REF *courts_newRef(char *custName, time_t date, uint staff_id) {
 	uint ref_num = ++references.lastRef;
 	uint nameLen = (strlen(custName) + 1) * sizeof(char);
 	char *custName2 = malloc(nameLen);
+	if (custName2 == NULL)
+		return NULL;
 	RSVP_REF refItem = { 0 };
 	RSVP_REF *tmpArr = realloc(references.rsvpRef, ++references.refLen * sizeof(RSVP_REF));
 	strcpy_s(custName2, nameLen, custName);
@@ -388,6 +394,7 @@ RSVP_REF *courts_newRef(char *custName, time_t date, uint staff_id) {
 	if (tmpArr == NULL) {
 		references.lastRef--;
 		references.refLen--;
+		free(custName2);
 		return NULL;
 	}
 	refItem = (RSVP_REF) { ref_num, date, staff_id, custName2, NULL };
