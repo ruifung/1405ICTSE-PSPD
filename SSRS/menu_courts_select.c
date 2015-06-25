@@ -44,6 +44,7 @@ bool menu_courts_sel_callback(UINT index){
 }
 
 bool menu_courts_sel_back(UINT index){
-	menu_switch(menu_courts());
+	if(courts_action == COURTS_ACTION_CHECK)menu_switch(menu_courts());
+	else menu_switch(menu_courts_book());
 	return false;
 }

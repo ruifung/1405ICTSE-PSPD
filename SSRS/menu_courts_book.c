@@ -45,7 +45,7 @@ bool menu_courts_book_callback(UINT index){
 		menu_switch(menu_courts_select());
 		break;
 	case 2:
-		if (booking_cache.count > 0){
+		if (booking_cache.count == 0){
 			printf("Nothing to checkout!\n");
 			pause();
 			return true;
