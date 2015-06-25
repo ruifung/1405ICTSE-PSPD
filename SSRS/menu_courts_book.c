@@ -33,14 +33,14 @@ bool menu_courts_book_callback(UINT index){
 		printf("Customer: %s\n\n", pending->customerName);
 		if (courts_countRefReservations(pending->ref_num) > 0){
 			//printf("%-12s%-8s%-8s%-8s%-8s%-10s\n", "Sport", "Court", "Start", "End", "Rate", "Amount(RM)");
-			printf("Sport       Court   Start   End     Rate(RM)  Amount(RM)\n");
-			printf("--------------------------------------------------------\n");
+			printf("Sport       Court   Date        Start   End     Rate(RM)  Amount(RM)\n");
+			printf("--------------------------------------------------------------------\n");
 			RSVP_LINK * rsvp = pending->list;
 			do{
 				time_t start = rsvp->item->startTime * BLOCK_DURATION;
 				time_t end = (rsvp->item->startTime + rsvp->item->blockCount) *
 								BLOCK_DURATION;
-				char s_str[6], e_str[6];
+				char s_str[6], e_str[6], d_str[11];
 				float amount = rsvp->item->blockCount *
 					courts[rsvp->item->court_id].rate;
 				if (localtime(&end)->tm_hour > 17){
@@ -50,9 +50,10 @@ bool menu_courts_book_callback(UINT index){
 				}
 				strftime(s_str, 6, "%H:%M", localtime(&start));
 				strftime(e_str, 6, "%H:%M", localtime(&end));
-				printf("%-12s%-8c%-8s%-8s%9.2f %9.2f\n",
+				strftime(d_str, 11, "%Y-%m-%d", localtime(&end));
+				printf("%-12s%-8c%-12s%-8s%-8s%9.2f %9.2f\n",
 					courts_typeIDStr(courts[rsvp->item->court_id].type),
-					courts[rsvp->item->court_id].label,
+					courts[rsvp->item->court_id].label, d_str,
 					s_str, e_str, courts[rsvp->item->court_id].rate * 2,
 					amount);
 				rsvp = rsvp->next;
@@ -75,11 +76,10 @@ bool menu_courts_book_callback(UINT index){
 		
 	case 3:
 		if (courts_countRefReservations(pending->ref_num) > 0)
-			if (!confirm("Are you sure to cancel this booking?")){
-				courts_delRef(pending->ref_num);
-				pending = NULL;
+			if (!confirm("Are you sure to cancel this booking?"))
 				return true;
-			}
+		courts_delRef(pending->ref_num);
+		pending = NULL;
 		menu_switch(menu_courts());
 		break;
 	}

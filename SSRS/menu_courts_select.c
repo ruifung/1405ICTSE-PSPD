@@ -89,14 +89,14 @@ void print_slots(){
 	uint half = (court->endBlock - court->startBlock + 1) / 2;
 	time_t t;
 	char cache[2][6];
-	bool available;
+	void * available;
 	for (uint i = 0; i < half; i++){
 		t = (block + i) * BLOCK_DURATION;
-		available = courts_getBlockReservation(courts_selected, block + i) == NULL;
+		available = courts_getBlockReservation(courts_selected, block + i);
 		strftime(cache[0], 6, "%H:%M", localtime(&t));
 		t = (block + i + 1) * BLOCK_DURATION;
 		strftime(cache[1], 6, "%H:%M", localtime(&t));
-		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Empty" : "Reserved");
+		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], (!available) ? "Empty" : "Reserved");
 		int h = half + i;
 		if (court->startBlock + h < court->endBlock){
 			t = (block + h) * BLOCK_DURATION;
@@ -156,12 +156,16 @@ void book_slot(uint slot){
 		printf("Invalid duration\n");
 		return;
 	}
+	clrscr;
+	printf("Reservation:");
 	time_t start = block * BLOCK_DURATION;
 	time_t end = (block + duration) * BLOCK_DURATION;
-	char s_str[6], e_str[6];
+	char s_str[6], e_str[6], d_str[11];
 	strftime(s_str, 6, "%H:%M", localtime(&start));
 	strftime(e_str, 6, "%H:%M", localtime(&end));
-	printf("\nStart Time: %s\n", s_str);
+	strftime(d_str, 11, "%Y-%m-%d", localtime(&start));
+	printf("\nDate: %s\n", d_str);
+	printf("Start Time: %s\n", s_str);
 	printf("End Time: %s\n", e_str);
 	printf("Duration: %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);
 	printf("Rate per Hour: RM %.2f\n", courts[courts_selected].rate * 2);
