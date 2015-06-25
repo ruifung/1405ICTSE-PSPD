@@ -159,7 +159,7 @@ _Bool courts_save() {
 	return true;
 }
 
-char* courts_typeIDStr(int type) {
+char* courts_typeIDStr(uint type) {
 	switch (type) {
 	case COURT_TYPE_BATMINTON:
 		return COURT_NAME_BATMINTON;

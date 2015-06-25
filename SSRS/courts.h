@@ -61,7 +61,7 @@ struct RSVP_LINK {
 extern COURT courts[COURTS_COUNT];
 
 void courts_init(char *);
-char *courts_typeIDStr(int type);
+char *courts_typeIDStr(uint type);
 int courts_timeBlock(time_t time);
 time_t courts_blockTime(int block);
 
