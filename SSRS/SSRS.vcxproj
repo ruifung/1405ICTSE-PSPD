@@ -67,6 +67,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bst.c" />
+    <ClInclude Include="booking.h" />
     <ClInclude Include="bst.h" />
     <ClCompile Include="courts.c" />
     <ClCompile Include="main.c" />
@@ -74,6 +75,7 @@
     <ClCompile Include="menu_admin_edit.c" />
     <ClCompile Include="menu_admin_select.c" />
     <ClCompile Include="menu_courts.c" />
+    <ClCompile Include="menu_courts_book.c" />
     <ClCompile Include="menu_courts_select.c" />
     <ClCompile Include="menu_guest.c" />
     <ClCompile Include="menu_login.c" />

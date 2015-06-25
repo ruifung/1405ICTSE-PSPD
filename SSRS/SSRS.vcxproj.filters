@@ -60,6 +60,9 @@
     <ClCompile Include="menu_courts_select.c">
       <Filter>Source Files\menu\courts</Filter>
     </ClCompile>
+    <ClCompile Include="menu_courts_book.c">
+      <Filter>Source Files\menu\courts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menu_courts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="booking.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

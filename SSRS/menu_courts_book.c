@@ -41,6 +41,7 @@ bool menu_courts_book_callback(UINT index){
 		pause();
 		return true;
 	case 1:
+		courts_action = COURTS_ACTION_PLACE;
 		menu_switch(menu_courts_select());
 		break;
 	case 2:
