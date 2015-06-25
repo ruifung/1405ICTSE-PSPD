@@ -7,6 +7,7 @@
 
 #include "bst.h"
 #include "courts.h"
+#include "simcon.h"
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
 
@@ -376,15 +377,18 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 //Due to this function, there will never be a ref num of 0;
 RSVP_REF *courts_newRef(char *custName, time_t date) {
 	uint ref = ++references.lastRef;
+	uint nameLen = (strlen(custName) + 1) * sizeof(char);
+	char *custName2 = malloc(nameLen);
 	RSVP_REF refItem = { 0 };
 	RSVP_REF *tmpArr = realloc(references.rsvpRef, ++references.refLen * sizeof(RSVP_REF));
+	strcpy_s(custName2, nameLen, custName);
 	//IF FAILED TO EXTEND ARRAY, UNDO INCREMENTS AND RETURN
 	if (tmpArr == NULL) {
 		references.lastRef--;
 		references.refLen--;
 		return NULL;
 	}
-	refItem = (RSVP_REF) {ref,date,custName,NULL};
+	refItem = (RSVP_REF) {ref,date,custName2,NULL};
 	tmpArr[references.refLen - 1] = refItem;
 	references.rsvpRef = tmpArr;
 	return &references.rsvpRef[references.refLen - 1];
@@ -411,8 +415,21 @@ void courts_delRef(uint ref_num) {
 			linkItem = linkItem->prev;
 		free(tmpLink);
 	}
+	//Shift all array elements right of item to the left by 1
 	for (uint i = index; i < references.refLen; i++) {
-
+		if ((i + 1) < references.refLen) {
+			references.rsvpRef[i] = references.rsvpRef[i + 1];
+		}
+	}
+	//Free the reference item.
+	free(ref->customerName);
+	free(ref);
+	//Shrink memory allocation
+	uint newLen = --references.refLen;
+	if (newLen > 0) {
+		ref = realloc(references.rsvpRef, newLen *sizeof(RSVP_REF));
+		if (ref != NULL)
+			references.rsvpRef = ref;
 	}
 }
 
