@@ -44,7 +44,7 @@ typedef struct {
 	uint ref_num;
 	char customer[65];
 	time_t date; // of bill
-};
+} RECEIPT;
 
 extern COURT courts[COURTS_COUNT];
 
