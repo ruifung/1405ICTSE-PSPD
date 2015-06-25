@@ -49,7 +49,7 @@ bool menu_courts_book_callback(UINT index){
 				}
 				strftime(s_str, 6, "%H:%M", localtime(start));
 				strftime(e_str, 6, "%H:%M", localtime(end));
-				prinf("%-12s%-8c%-8s%-8s%7.2f %9.2f\n",
+				printf("%-12s%-8c%-8s%-8s%7.2f %9.2f\n",
 					courts_typeIDStr(courts[rsvp->item->court_id].type),
 					courts[rsvp->item->court_id].label,
 					s_str, e_str, courts[rsvp->item->court_id].rate,
