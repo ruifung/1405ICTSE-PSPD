@@ -66,8 +66,8 @@ bool menu_courts_sel_callback(UINT index){
 	printf("\nPlease select a slot for %s, choose 0 or press escape to cancel.\n", 
 		courts_action == COURTS_ACTION_CHECK ? "details" : "booking");
 	printf("Slot: ");
-	uint slot = getint(2, true);
-	if (slot <= 0)return true;
+	int slot = getint(2, true);
+	if (slot <= 0) return true;
 	if (slot > courts[courts_selected].endBlock - courts[courts_selected].startBlock){
 		printf("Invalid slot!\n");
 		pause();
