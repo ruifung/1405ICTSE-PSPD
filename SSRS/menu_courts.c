@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "simcon.h"
+#include "staffs.h"
 #include "courts.h"
 #include "menu.h"
 #include "menu_courts.h"
@@ -42,7 +43,7 @@ bool menu_courts_callback(UINT index){
 			pause();
 			return true;
 		}
-		pending = courts_newRef(customer, time(NULL));
+		pending = courts_newRef(customer, time(NULL), logged_staff->id);
 		menu_switch(menu_courts_book());
 		break;
 	case 2:

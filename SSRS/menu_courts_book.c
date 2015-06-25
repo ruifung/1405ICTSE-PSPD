@@ -72,7 +72,7 @@ bool menu_courts_book_callback(UINT index){
 			pause();
 			return true;
 		};
-
+		
 	case 3:
 		if (courts_countRefReservations(pending->ref_num) > 0)
 			if (!confirm("Are you sure to cancel this booking?")){

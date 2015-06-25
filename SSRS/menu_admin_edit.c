@@ -71,7 +71,7 @@ bool menu_admin_edit_callback(UINT index){
 		}
 		printf("%-10s", "Confirm:");
 		getstr(pwd2, 25, '*', false);
-		if (strcmp(pwd1, pwd2) == 0){
+		if (strcmp(pwd1, pwd2) != 0){
 			printf("Password does't match!");
 			pause();
 		} else {
