@@ -12,17 +12,6 @@
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
 
 //Structs and types for internal use.
-typedef struct RSVP_REF RSVP_REF;
-typedef struct RSVP_LINK RSVP_LINK;
-struct RSVP_REF {
-	uint ref_num;
-	RSVP_LINK *list;
-};
-struct RSVP_LINK {
-	RESERVATION *item;
-	RSVP_LINK *prev;
-	RSVP_LINK *next;
-};
 
 COURT courts[COURTS_COUNT];
 char *reservations_file;
@@ -346,7 +335,7 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 }
 
 //Due to this function, there will never be a ref num of 0;
-uint courts_newRefNum() {
+RSVP_REF courts_newRefNumt(char *custName, time_t date) {
 	uint ref = ++references.lastRef;
 	RSVP_REF *tmpArr = realloc(references.rsvpRef, ++references.refLen * sizeof(RSVP_REF));
 	if (tmpArr == NULL) {
@@ -354,6 +343,8 @@ uint courts_newRefNum() {
 		references.refLen--;
 		return 0;
 	}
+	tmpArr[references.refLen - 1] = (RSVP_REF) {ref,NULL,};
+	references.rsvpRef = tmpArr;
 	return ref;
 }
 uint courts_countRefReservations(uint ref) {

@@ -42,9 +42,21 @@ typedef struct {
 
 typedef struct {
 	uint ref_num;
-	char customer[65];
-	time_t date; // of bill
+	 // of bill
 } RECEIPT;
+typedef struct RSVP_REF RSVP_REF;
+typedef struct RSVP_LINK RSVP_LINK;
+struct RSVP_REF {
+	uint ref_num;
+	char *customerName;
+	time_t date;
+	RSVP_LINK *list;
+};
+struct RSVP_LINK {
+	RESERVATION *item;
+	RSVP_LINK *prev;
+	RSVP_LINK *next;
+};
 
 extern COURT courts[COURTS_COUNT];
 
@@ -61,7 +73,8 @@ bool courts_checkBlockRange(uint lowerBlock, uint upperBlock);
 RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, uint blockCount);
 bool courts_delReservation(RESERVATION *reservation);
 
-uint courts_newRefNum();
+RSVP_REF courts_newRefNumt(char *custName, time_t date);
+RSVP_REF courts_getRefItem(uint ref);
 uint courts_countRefReservations(uint ref);
 void courts_getRefReservations(uint ref, RESERVATION **dataArray, uint arraySize);
 #endif // !COURTS_HEADER
