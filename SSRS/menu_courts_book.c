@@ -33,26 +33,27 @@ bool menu_courts_book_callback(UINT index){
 		printf("Customer: %s\n\n", pending->customerName);
 		if (courts_countRefReservations(pending->ref_num) > 0){
 			//printf("%-12s%-8s%-8s%-8s%-8s%-10s\n", "Sport", "Court", "Start", "End", "Rate", "Amount(RM)");
-			printf("Sport       Court   Start   End     Rate    Amount(RM)\n");
-			printf("------------------------------------------------------\n");
+			printf("Sport       Court   Start   End     Rate(RM)  Amount(RM)\n");
+			printf("--------------------------------------------------------\n");
 			RSVP_LINK * rsvp = pending->list;
 			do{
 				time_t start = rsvp->item->startTime * BLOCK_DURATION;
-				time_t end = start + (rsvp->item->blockCount + 1 * BLOCK_DURATION);
+				time_t end = (rsvp->item->startTime + rsvp->item->blockCount) *
+								BLOCK_DURATION;
 				char s_str[6], e_str[6];
 				float amount = rsvp->item->blockCount *
 					courts[rsvp->item->court_id].rate;
-				if (localtime(end)->tm_hour > 17){
-					int charged = (localtime(end)->tm_hour - 17) / 2;
-					charged += localtime(end)->tm_min / 30;
+				if (localtime(&end)->tm_hour > 17){
+					int charged = (localtime(&end)->tm_hour - 17) / 2;
+					charged += localtime(&end)->tm_min / 30;
 					amount += (charged * courts[rsvp->item->court_id].rate * 0.2);
 				}
-				strftime(s_str, 6, "%H:%M", localtime(start));
-				strftime(e_str, 6, "%H:%M", localtime(end));
-				printf("%-12s%-8c%-8s%-8s%7.2f %9.2f\n",
+				strftime(s_str, 6, "%H:%M", localtime(&start));
+				strftime(e_str, 6, "%H:%M", localtime(&end));
+				printf("%-12s%-8c%-8s%-8s%9.2f %9.2f\n",
 					courts_typeIDStr(courts[rsvp->item->court_id].type),
 					courts[rsvp->item->court_id].label,
-					s_str, e_str, courts[rsvp->item->court_id].rate,
+					s_str, e_str, courts[rsvp->item->court_id].rate * 2,
 					amount);
 				rsvp = rsvp->next;
 			} while (rsvp != NULL);
