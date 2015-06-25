@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <time.h>
 
+#include "conmac.h"
 #include "simcon.h"
 #include "courts.h"
 #include "menu.h"
@@ -32,32 +33,7 @@ bool menu_courts_book_callback(UINT index){
 	case 0:
 		printf("Customer: %s\n\n", pending->customerName);
 		if (courts_countRefReservations(pending->ref_num) > 0){
-			//printf("%-12s%-8s%-8s%-8s%-8s%-10s\n", "Sport", "Court", "Start", "End", "Rate", "Amount(RM)");
-			printf("Sport       Court   Date        Start   End     Rate(RM)  Amount(RM)\n");
-			printf("--------------------------------------------------------------------\n");
-			RSVP_LINK * rsvp = pending->list;
-			do{
-				time_t start = rsvp->item->startTime * BLOCK_DURATION;
-				time_t end = (rsvp->item->startTime + rsvp->item->blockCount) *
-								BLOCK_DURATION;
-				char s_str[6], e_str[6], d_str[11];
-				float amount = rsvp->item->blockCount *
-					courts[rsvp->item->court_id].rate;
-				if (localtime(&end)->tm_hour > 17){
-					int charged = (localtime(&end)->tm_hour - 17) / 2;
-					charged += localtime(&end)->tm_min / 30;
-					amount += (charged * courts[rsvp->item->court_id].rate * 0.2);
-				}
-				strftime(s_str, 6, "%H:%M", localtime(&start));
-				strftime(e_str, 6, "%H:%M", localtime(&end));
-				strftime(d_str, 11, "%Y-%m-%d", localtime(&end));
-				printf("%-12s%-8c%-12s%-8s%-8s%9.2f %9.2f\n",
-					courts_typeIDStr(courts[rsvp->item->court_id].type),
-					courts[rsvp->item->court_id].label, d_str,
-					s_str, e_str, courts[rsvp->item->court_id].rate * 2,
-					amount);
-				rsvp = rsvp->next;
-			} while (rsvp != NULL);
+			courts_printRefDetails(stdout, pending->ref_num);
 		} else {
 			printf("No any bookings yet.\n");
 		}
@@ -73,7 +49,24 @@ bool menu_courts_book_callback(UINT index){
 			pause();
 			return true;
 		};
-		
+		//courts_save();
+		clrscr;
+		courts_printRefReceipt(stdout, pending->ref_num);
+		if (confirm("\nDo you wish to print out the receipt?")){
+			system("if not exist \"receipts\" (mkdir receipts>nul)");
+			char path[22];
+			char cmd[36];
+			sprintf(path, "receipts/%08X.txt", pending->ref_num);
+			FILE * file_ptr = fopen(path, "w");
+			if (file_ptr != NULL){
+				courts_printRefReceipt(file_ptr, pending->ref_num);
+				fclose(file_ptr);
+				sprintf(cmd, "notepad \"%s\">nul", path);
+				system(cmd);
+			} else _pause("ERROR: Failed to create %s", path);
+		}
+		menu_switch(menu_courts());
+		break;
 	case 3:
 		if (courts_countRefReservations(pending->ref_num) > 0)
 			if (!confirm("Are you sure to cancel this booking?"))

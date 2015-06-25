@@ -80,4 +80,8 @@ RSVP_REF *courts_newRef(char *custName, time_t date, uint staff_id);
 void courts_delRef(uint ref);
 RSVP_REF *courts_getRefItem(uint ref);
 uint courts_countRefReservations(uint ref);
+
+//Printing functions
+bool courts_printRefReceipt(FILE*, uint);
+bool courts_printRefDetails(FILE*, uint);
 #endif // !COURTS_HEADER

@@ -119,10 +119,10 @@ void check_slot(uint slot){
 		printf("Customer Name:  %s\n", ref->customerName);
 		printf("Reference Code: %08X", ref->ref_num);
 		time_t t = res->startTime * BLOCK_DURATION;
-		strftime(cache, 6, "%H:%M", localtime(t));
+		strftime(cache, 6, "%H:%M", localtime(&t));
 		printf("Start Time:     %s\n", cache);
 		t = (res->startTime + res->blockCount + 1) * BLOCK_DURATION;
-		strftime(cache, 6, "%H:%M", localtime(t));
+		strftime(cache, 6, "%H:%M", localtime(&t));
 		printf("End Time:       %s\n", cache);
 		printf("Duration:       %d hour(s) %d minute(s)\n",
 			res->blockCount / 2, (res->blockCount % 1) * 30);
@@ -133,6 +133,7 @@ void check_slot(uint slot){
 }
 
 void book_slot(uint slot){
+	COURT * c_sel = &courts[courts_selected];
 	uint block = courts_getFirstBlockSlot(date_selected / BLOCK_DURATION,
 		courts_selected) + slot - 1;
 	void * r = courts_getBlockReservation(courts_selected, block);
@@ -145,8 +146,8 @@ void book_slot(uint slot){
 	while (true){
 		r = courts_getBlockReservation(courts_selected, block + max);
 		if (r != NULL) break;
-		if (courts[courts_selected].startBlock + slot + max - 1 >=
-			courts[courts_selected].endBlock) break;
+		if (c_sel->startBlock + slot + max - 1 >=
+			c_sel->endBlock) break;
 		max++;
 	}
 	printf("Please enter a duration(count as number of slot),\n");
@@ -164,18 +165,18 @@ void book_slot(uint slot){
 	strftime(s_str, 6, "%H:%M", localtime(&start));
 	strftime(e_str, 6, "%H:%M", localtime(&end));
 	strftime(d_str, 11, "%Y-%m-%d", localtime(&start));
-	printf("\nDate: %s\n", d_str);
-	printf("Start Time: %s\n", s_str);
-	printf("End Time: %s\n", e_str);
-	printf("Duration: %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);
-	printf("Rate per Hour: RM %.2f\n", courts[courts_selected].rate * 2);
-	float price = duration * courts[courts_selected].rate;
-	if (localtime(&end)->tm_hour > 17){
-		int charged = (localtime(&end)->tm_hour - 17) / 2;
+	printf("\nDate:          %s\n", d_str);
+	printf("Start Time:    %s\n", s_str);
+	printf("End Time:      %s\n", e_str);
+	printf("Duration:      %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);
+	printf("Rate per Hour: RM %.2f\n", c_sel->rate * 2);
+	float price = duration * c_sel->rate;
+	if (localtime(&end)->tm_hour >= 17){
+		int charged = (localtime(&end)->tm_hour - 17) * 2;
 		charged += localtime(&end)->tm_min / 30;
-		price += (charged * courts[courts_selected].rate * 0.2);
+		price += (charged * c_sel->rate * 0.2);
 	}
-	printf("Amount: RM %.2f\n", price);
+	printf("Amount:        RM %.2f\n", price);
 	printf("\nNote: An additional 20%% will be charged for those slot during peak hours(on 5PM onwards daily).\n");
 	if (confirm("Confirm add this into booking list?")){
 		RESERVATION *rsvp = courts_addReservation(pending->ref_num, courts_selected, block, duration);

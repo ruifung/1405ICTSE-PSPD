@@ -7,6 +7,7 @@
 
 #include "bst.h"
 #include "courts.h"
+#include "staffs.h"
 #include "simcon.h"
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
@@ -128,8 +129,7 @@ _Bool courts_save() {
 		//DO NOTHING IF FILE NOT FOUND.. We are going to write the file anyway.
 		if (GetLastError() == ERROR_FILE_NOT_FOUND);
 		else return false;
-	}
-	if (attr & FILE_ATTRIBUTE_DIRECTORY) {
+	} else if (attr & FILE_ATTRIBUTE_DIRECTORY) {
 		_pause("ERROR:%s is a folder!", reservations_file);
 		return false;
 	} 
@@ -503,4 +503,59 @@ void courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item)
 
 int courts_cmprRef(const RSVP_REF *item1, const RSVP_REF *item2) {
 	return item1->ref_num - item2->ref_num;
+}
+
+bool courts_printRefReceipt(FILE * file, uint ref_num){
+	RSVP_REF * ref = courts_getRefItem(ref_num);
+	if (ref == NULL) return false;
+	char date[11];
+	strftime(date, 11, "%Y-%m-%d", localtime(&ref->date));
+	fprintf(file, "Genome Sport Centre                              Bill Code: %08X\n", ref_num);
+	fprintf(file, "No. 123, Sri Petaling,\n");
+	fprintf(file, "Kuala Lumpur\n");
+	fprintf(file, "Tel: 03-89119223\n");
+	fprintf(file, "Staff: %s\n", staff_by_id(ref->staff_id)->name);
+	fprintf(file, "                                                    Date: %s\n", date);
+	fprintf(file, "Customer Name: %s\n", ref->customerName);
+	fprintf(file, "====================================================================\n");
+	courts_printRefDetails(file, ref_num);
+	fprintf(file, "====================================================================\n");
+	fprintf(file, "  This is a computer-generated receipt, No sign or stamp required.\n");
+	return true;
+}
+
+bool courts_printRefDetails(FILE * file, uint ref_num){
+	RSVP_REF * ref = courts_getRefItem(ref_num);
+	if (ref == NULL) return false;
+	if (courts_countRefReservations(ref->ref_num) == 0) return false;
+	float total = 0.0f;
+	fprintf(file, "Sport       Court   Date        Start   End     Rate(RM)  Amount(RM)\n");
+	fprintf(file, "--------------------------------------------------------------------\n");
+	RSVP_LINK * rsvp = ref->list;
+	do{
+		time_t start = rsvp->item->startTime * BLOCK_DURATION;
+		time_t end = (rsvp->item->startTime + rsvp->item->blockCount) *
+			BLOCK_DURATION;
+		char s_str[6], e_str[6], d_str[11];
+		float amount = rsvp->item->blockCount *
+			courts[rsvp->item->court_id].rate;
+		if (localtime(&end)->tm_hour >= 17){
+			int charged = (localtime(&end)->tm_hour - 17) * 2;
+			charged += localtime(&end)->tm_min / 30;
+			amount += (charged * courts[rsvp->item->court_id].rate * 0.2);
+		}
+		strftime(s_str, 6, "%H:%M", localtime(&start));
+		strftime(e_str, 6, "%H:%M", localtime(&end));
+		strftime(d_str, 11, "%Y-%m-%d", localtime(&end));
+		fprintf(file, "%-12s%-8c%-12s%-8s%-8s%9.2f %10.2f\n",
+			courts_typeIDStr(courts[rsvp->item->court_id].type),
+			courts[rsvp->item->court_id].label, d_str,
+			s_str, e_str, courts[rsvp->item->court_id].rate * 2,
+			amount);
+		total += amount;
+		rsvp = rsvp->next;
+	} while (rsvp != NULL);
+	fprintf(file, "====================================================================\n");
+	fprintf(file, "%48s%10s%9.2f\n", "", "Total:", total);
+	return true;
 }
