@@ -9,12 +9,13 @@
 #include "courts.h"
 #include "resource.h"
 #include "conmac.h"
+#include "lang.h"
 
 void setup();
 
 int main(int argc, char * args[]){
 	SetConTextAttr(FOREGROUND_WHITE);
-	SetConsoleTitle("Sport Space Rental System");
+	SetConsoleTitle(program_name);
 	HANDLE icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MAIN));
 	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_SMALL, icon);
 
@@ -31,8 +32,8 @@ int main(int argc, char * args[]){
 	while (!staffs_init()) setup();
 	courts_init("reservations.dat");
 	if (!courts_load()){
-		printf("ERROR: Failed to load reservations!\n");
-		_pause("Press any key to exit.");
+		printf(error_rsvp_load);
+		_pause(msg_press_to_exit);
 		return;
 	}
 	menu_start(menu_guest());
@@ -41,37 +42,40 @@ int main(int argc, char * args[]){
 void setup(){
 	clrscr;
 	SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-	printf("WARNING: This program haven't setup, please setup before use!\n");
+	printf(warn_nosetup);
 	SetConTextAttr(FOREGROUND_WHITE);
-	_pause("Press any key to start setup.");
+	_pause(msg_start_setup);
 	clrscr;
 	char name[65] = "Administrator", user[25] = "admin", pass[25] = "", temp[25] = "";
-	printf("Please enter a name for Admin:\n");
+	printf(prompt_name, "Admin");
 	getstr(name, 65, 0, false);
-	printf("\nPlease enter a username for Admin (for login):\n");
+	printf("\n");
+	printf(prompt_username,name);
 	getstr(user, 25, 0, false);
 	if (strlen(user) < 5){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		printf("\nThe username must be at least 5 characters!\n");
+		putch('\n');
+		printf(warn_usermin);
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();
 		return;
 	}
-	printf("\nPlease enter a password for Admin (at least 8 characters):\n");
+	printf(prompt_password,name);
 	getstr(pass, 25, '*', false);
 	if (strlen(pass) < 8){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		printf("\nThe password must be at least 8 characters!\n");
+		putch('\n');
+		printf(warn_passmin);
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();
 		return;
 	}
-	printf("\nPlease confirm the password:\n");
+	printf(prompt_confirmpass);
 	getstr(temp, 25, '*', false);
 	_putch('\n');
 	if (strcmp(pass, temp)){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		printf("\nTwo password doesn't match!\n");
+		printf(warn_pass_mismatch);
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();
 		return;

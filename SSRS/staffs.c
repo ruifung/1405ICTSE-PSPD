@@ -6,6 +6,7 @@
 
 #include "simcon.h"
 #include "staffs.h"
+#include "lang.h"
 
 long header[] = { 2037411651, 1751607666, 808591476,
 				  1126184241, 1700012107, 539782497,
@@ -22,7 +23,8 @@ bool staffs_init(){
 		return 0;
 	}
 	if (attr & FILE_ATTRIBUTE_DIRECTORY){
-		_pause("ERROR:%s is a folder!\n\nPress any key to exit.", "asdf",STAFF_FILE);
+		printf(error_file_isfolder, STAFF_FILE);
+		_pause(msg_press_to_exit);
 		exit(0);
 	}
 	staffs_load();
