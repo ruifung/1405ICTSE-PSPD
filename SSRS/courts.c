@@ -151,7 +151,6 @@ _Bool courts_save() {
 	}
 	//Save reservation data
 	fwrite(&reservations.lastID, sizeof(uint), 1, file);
-	fwrite(&references, sizeof(references), 1, file);
 	fwrite(&reservations.length, sizeof(uint), 1, file);
 	for (uint i = 0; i < reservations.length; i++) {
 		fwrite(reservations.data[i], sizeof(RESERVATION), 1, file);
