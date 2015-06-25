@@ -231,11 +231,10 @@ RESERVATION *courts_getBlockReservation(char courtId, uint block) {
 	if (node == NULL) {
 		//Check each block before it up to the first block of the day.
 		for (uint blk = block;blk > firstBlockOfDay;blk--) {
-			BST_NODE *tmpNode;
-			tmpNode = bst_search(courts[courtId].reservations, &block, sizeof(uint), &courts_cmpr);
+			node = bst_search(courts[courtId].reservations, &blk, sizeof(uint), &courts_cmpr);
 			//If a reservation exists for that block...
-			if (tmpNode != NULL) {
-				RESERVATION *rsvpPtr = tmpNode->data;
+			if (node != NULL) {
+				RESERVATION *rsvpPtr = node->data;
 				//Check if its ending block is AFTER the specified block.
 				if ((rsvpPtr->startTime + rsvpPtr->blockCount) >= block) {
 					return rsvpPtr;
@@ -243,6 +242,7 @@ RESERVATION *courts_getBlockReservation(char courtId, uint block) {
 			}
 		}
 	}
+	uint block2 = block;
 	if (node == NULL) return NULL;
 	else return (RESERVATION *)node->data;
 }
