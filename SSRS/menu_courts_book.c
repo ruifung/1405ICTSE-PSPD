@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <Windows.h>
+#include <time.h>
 
 #include "simcon.h"
 #include "courts.h"
@@ -30,11 +31,30 @@ SCI_MENU * menu_courts_book(){
 bool menu_courts_book_callback(UINT index){
 	switch (index){
 	case 0:
-		printf("Customer: %s\n", booking_cache.customer);
+		printf("Customer: %s\n\n", booking_cache.customer);
 		if (booking_cache.count > 0){
 			//printf("%-12s%-8s%-8s%-8s%-8s%-10s\n", "Sport", "Court", "Start", "End", "Rate", "Amount(RM)");
 			printf("Sport       Court   Start   End     Rate    Amount(RM)\n");
 			printf("------------------------------------------------------\n");
+			for (int i = 0; i < booking_cache.count; i++){
+				time_t start = booking_cache.reservations[i].startTime * BLOCK_DURATION;
+				time_t end = start + (booking_cache.reservations[i].blockCount + 1 * BLOCK_DURATION);
+				char s_str[6], e_str[6];
+				float amount = booking_cache.reservations[i].blockCount * 
+					courts[booking_cache.reservations[i].court_id].rate;
+				if (localtime(end)->tm_hour > 17){
+					int charged = (localtime(end)->tm_hour - 17) / 2;
+					charged += localtime(end)->tm_min / 30;
+					amount += (charged * courts[booking_cache.reservations[i].court_id].rate * 0.2);
+				}
+				strftime(s_str, 6, "%H:%M", localtime(start));
+				strftime(e_str, 6, "%H:%M", localtime(end));
+				prinf("%-12s%-8c%-8s%-8s%7.2f %9.2f\n",
+					courts_typeIDStr(courts[booking_cache.reservations[i].court_id].type),
+					courts[booking_cache.reservations[i].court_id].label,
+					s_str, e_str, courts[booking_cache.reservations[i].court_id].rate,
+					amount);
+			}
 		} else {
 			printf("No any bookings yet.\n");
 		}

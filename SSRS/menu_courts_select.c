@@ -10,13 +10,14 @@
 #include "courts.h"
 #include "menu_courts.h"
 #include "conmac.h"
+#include "booking.h"
 
 SCI_MENU * m_courts_sel = NULL;
 
 bool menu_courts_sel_callback(UINT);
 bool menu_courts_sel_back(UINT);
 void print_slots();
-void choose_slot(uint);
+void book_slot(uint);
 void check_slot(uint);
 
 SCI_MENU * menu_courts_select(){
@@ -72,7 +73,7 @@ bool menu_courts_sel_callback(UINT index){
 		printf("Invalid slot!\n");
 		pause();
 	}
-	if (courts_action == COURTS_ACTION_PLACE) ;// choose_slot(date);
+	if (courts_action == COURTS_ACTION_PLACE) book_slot(slot);
 	else check_slot(slot);
 	return false;
 }
@@ -96,7 +97,7 @@ void print_slots(){
 		strftime(cache[0], 6, "%H:%M", localtime(&t));
 		t = (block + i + 1) * BLOCK_DURATION;
 		strftime(cache[1], 6, "%H:%M", localtime(&t));
-		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Available" : "Not Available");
+		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Empty" : "Not Available");
 		int h = half + i;
 		if (court->startBlock + h < court->endBlock){
 			t = (block + h) * BLOCK_DURATION;
@@ -104,7 +105,7 @@ void print_slots(){
 			strftime(cache[0], 6, "%H:%M", localtime(&t));
 			t = (block + h + 1) * BLOCK_DURATION;
 			strftime(cache[1], 6, "%H:%M", localtime(&t));
-			printf("%2d. %s to %s - %-13s\n", h + 1, cache[0], cache[1], available ? "Available" : "Not Available");
+			printf("%2d. %s to %s - %-13s\n", h + 1, cache[0], cache[1], available ? "Empty" : "Not Available");
 		}
 	}
 }
@@ -116,11 +117,59 @@ void check_slot(uint slot){
 	if (res != NULL){
 		char cache[6];
 		RSVP_REF * ref = courts_getRefItem(res->ref_num);
-		printf("Customer Name: %s", ref->customerName);
+		printf("Customer Name:  %s\n", ref->customerName);
+		printf("Reference Code: %08X", ref->ref_num);
 		time_t t = res->startTime * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(t));
-		printf("Start Time: ");
+		printf("Start Time:     %s\n", cache);
+		t = (res->startTime + res->blockCount + 1) * BLOCK_DURATION;
+		strftime(cache, 6, "%H:%M", localtime(t));
+		printf("End Time:       %s\n", cache);
+		printf("Duration:       %d hour(s) %d minute(s)\n",
+			res->blockCount / 2, (res->blockCount % 1) * 30);
 	} else {
-		
+		printf("This slot is currently empty.\n");
+	}
+	pause();
+}
+
+void book_slot(uint slot){
+	uint block = courts_getFirstBlockSlot(date_selected / BLOCK_DURATION,
+		courts_selected) + slot - 1;
+	void * r = courts_getBlockReservation(courts_selected, block);
+	if (r != NULL){
+		printf("This slot is not available!\n");
+		pause();
+		return;
+	}
+	uint max = 1;
+	while (true){
+		r = courts_getBlockReservation(courts_selected, block + max);
+		if (r != NULL) break;
+		if (courts[courts_selected].startBlock + slot + max - 1 >=
+			courts[courts_selected].endBlock) break;
+		max++;
+	}
+	printf("Please enter a duration(count as number of slot),\n");
+	printf("The maximum number of slot you can book is %d: ", max);
+	uint duration = getint(2, false);
+	if (duration == 0 || duration > max){
+		printf("Invalid duration\n");
+		return;
+	}
+	printf("\nStart Time: %s\n");
+	printf("End Time: %s\n");
+	printf("Duration: %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);
+	printf("Rate: RM %.2f", courts[courts_selected].rate);
+	float price = duration * courts[courts_selected].rate;
+	if (slot + duration > 34)
+		price += (slot + duration - 34) * courts[courts_selected].rate * 0.2;
+	printf("Amount: RM %.2f", price);
+	printf("\nNote: An additional 20%% will be charged for those slot during peak hours(on 5PM onwards daily).\n");
+	if (confirm("Confirm add this into booking list?")){
+		RESERVATION * r = &booking_cache.reservations[++booking_cache.count];
+		r->court_id = courts_selected;
+		r->startTime = block;
+		r->blockCount = duration;
 	}
 }

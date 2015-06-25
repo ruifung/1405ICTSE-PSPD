@@ -34,6 +34,7 @@ bool menu_courts_callback(UINT index){
 		menu_switch(menu_courts_select());
 		break;
 	case 1:
+		booking_cache.count = 0;
 		printf("Customer name: ");
 		getstr(booking_cache.customer, 65, 0, false);
 		if (strlen(booking_cache.customer) == 0){
