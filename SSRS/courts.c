@@ -370,8 +370,8 @@ int courts_cmpr(BST_CMPR_ARGS) {
 }
 
 uint courts_getFirstBlockSlot(uint block, char courtId) {
-	time_t blockTime = (time_t)(block * BLOCK_DURATION);
-	time_t now = time(&blockTime);
+	time_t now = (time_t)(block * BLOCK_DURATION);
+	//time_t now = time(&blockTime);
 	struct tm *date = localtime(&now);
 	date->tm_hour = 0;
 	date->tm_min = 0;
