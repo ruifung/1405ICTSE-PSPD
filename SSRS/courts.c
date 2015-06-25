@@ -211,7 +211,7 @@ unsigned int courts_countCourtReservations(char courtId) {
 
 void courts_getCourtReservations(char courtId, RESERVATION **dataArray, unsigned int maxCount) {
 	//Allocate temporary array.
-	BST_NODE *tmpArr = malloc(maxCount * sizeof(tmpArr));
+	BST_NODE *tmpArr = malloc(maxCount * sizeof(BST_NODE));
 	//Get all reservations under courtId.
 	bst_getChilds(courts[courtId].reservations,tmpArr,maxCount);
 	//Copy only reservation data to storage array.
