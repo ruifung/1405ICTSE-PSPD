@@ -230,19 +230,20 @@ RESERVATION *courts_getBlockReservation(char courtId, uint block) {
 	//If no results...
 	if (node == NULL) {
 		//Check each block before it up to the first block of the day.
-		for (uint blk = block;blk > firstBlockOfDay;blk--) {
+		for (uint blk = block;blk >= firstBlockOfDay;blk--) {
 			node = bst_search(courts[courtId].reservations, &blk, sizeof(uint), &courts_cmpr);
 			//If a reservation exists for that block...
 			if (node != NULL) {
 				RESERVATION *rsvpPtr = node->data;
 				//Check if its ending block is AFTER the specified block.
-				if ((rsvpPtr->startTime + rsvpPtr->blockCount) >= block) {
-					return rsvpPtr;
-				}
+				if ((rsvpPtr->startTime + rsvpPtr->blockCount - 1) >= block)
+					break;
+				else
+					node = NULL;
 			}
 		}
 	}
-	uint block2 = block;
+	
 	if (node == NULL) return NULL;
 	else return (RESERVATION *)node->data;
 }
@@ -261,7 +262,7 @@ bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBl
 	//If the start time is less then the lowerBlock given.
 	if (rsvp->startTime <= lowerBlock) {
 		//Check if endBlock is inside range.
-		uint endBlock = rsvp->startTime + rsvp->blockCount;
+		uint endBlock = rsvp->startTime + rsvp->blockCount - 1;
 		if (endBlock >= lowerBlock && endBlock <= upperBlock)
 			return false;
 	}
@@ -366,7 +367,12 @@ bool courts_delReservation(RESERVATION *reservation) {
 
 int courts_cmpr(BST_CMPR_ARGS) {
 	//Cast pointer type from void * to uint * and subtract.
-	return *(uint *)key1 - *(uint *)key2;
+	if (*(uint *)key1 < *(uint *)key2)
+		return -1;
+	else if (*(uint *)key1 > *(uint *)key2)
+		return 1;
+	else if (*(uint *)key1 == *(uint *)key2)
+		return 0;
 }
 
 uint courts_getFirstBlockSlot(uint block, char courtId) {
