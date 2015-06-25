@@ -30,6 +30,11 @@ int main(int argc, char * args[]){
 	
 	while (!staffs_init()) setup();
 	courts_init("reservations.dat");
+	if (!courts_load()){
+		printf("ERROR: Failed to load reservations!\n");
+		_pause("Press any key to exit.");
+		return;
+	}
 	menu_start(menu_guest());
 }
 

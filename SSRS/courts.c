@@ -6,7 +6,6 @@
 #include <Windows.h>
 
 #include "bst.h"
-#include "simcon.h"
 #include "courts.h"
 
 #define reservations_read(buffer,elemSize,count,file) fread_s(buffer, count * elemSize, elemSize, count, file);
@@ -26,9 +25,6 @@ struct {
 	RSVP_REF *rsvpRef;
 } references;
 
-_Bool courts_load();
-_Bool courts_save();
-uint courts_getFirstBlockSlot(uint block, char courtId);
 int courts_cmpr(BST_CMPR_ARGS);
 bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBlock);
 uint courts_getReservationIndex(uint id);
@@ -373,7 +369,6 @@ uint courts_getFirstBlockSlot(uint block, char courtId) {
 	date->tm_hour = 0;
 	date->tm_min = 0;
 	date->tm_sec = 0;
-	getdate(date, false);
 	time_t start = mktime(date);
 	return (start / BLOCK_DURATION) + courts[courtId].startBlock;
 }

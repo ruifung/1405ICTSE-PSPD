@@ -13,7 +13,6 @@
 #define COURT_NAME_TENNIS "Tennis"
 #define COURT_NAME_FUTSAL "Futsal"
 
-#define MAX_BOOKING_SIZE 5000
 #define COURTS_COUNT 12
 
 // Seconds per block (30 mins)
@@ -59,6 +58,11 @@ struct RSVP_LINK {
 };
 
 extern COURT courts[COURTS_COUNT];
+
+_Bool courts_load();
+_Bool courts_save();
+
+uint courts_getFirstBlockSlot(uint block, char courtId);
 
 void courts_init(char *);
 char *courts_typeIDStr(uint type);

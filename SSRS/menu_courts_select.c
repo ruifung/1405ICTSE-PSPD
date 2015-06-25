@@ -9,11 +9,15 @@
 #include "menu.h"
 #include "courts.h"
 #include "menu_courts.h"
+#include "conmac.h"
 
 SCI_MENU * m_courts_sel = NULL;
 
 bool menu_courts_sel_callback(UINT);
 bool menu_courts_sel_back(UINT);
+void print_slots();
+void choose_slot(uint);
+void check_slot(uint);
 
 SCI_MENU * menu_courts_select(){
 	if (m_courts_sel == NULL){
@@ -51,7 +55,16 @@ bool menu_courts_sel_callback(UINT index){
 		pause();
 		return true;
 	}
-
+	date_selected = mktime(date);
+	clrscr;
+	char date_str[30];
+	strftime(date_str, 30, "%Y-%m-%d (%A)", date);
+	printf("Availability of %s Court %c for %s:\n\n", 
+		courts_typeIDStr(courts[courts_selected].type),
+		courts[courts_selected].label, date_str);
+	print_slots();
+	if (courts_action == COURTS_ACTION_PLACE);// choose_slot(date);
+	else;//check_slot();
 	return false;
 }
 
@@ -59,4 +72,30 @@ bool menu_courts_sel_back(UINT index){
 	if(courts_action == COURTS_ACTION_CHECK)menu_switch(menu_courts());
 	else menu_switch(menu_courts_book());
 	return false;
+}
+
+void print_slots(){
+	COURT * court = &courts[courts_selected];
+	uint block = courts_getFirstBlockSlot(date_selected / BLOCK_DURATION, courts_selected);
+	uint half = (court->endBlock - court->startBlock + 1) / 2;
+	time_t t;
+	char cache[2][6];
+	bool available;
+	for (uint i = 0; i < half; i++){
+		t = (block + i) * BLOCK_DURATION;
+		available = courts_getBlockReservation(courts_selected, block + i) == NULL;
+		strftime(cache[0], 6, "%H:%M", localtime(&t));
+		t = (block + i + 1) * BLOCK_DURATION;
+		strftime(cache[1], 6, "%H:%M", localtime(&t));
+		printf(" %2d. %s to %s - %-13s   ", i + 1, cache[0], cache[1], available ? "Available" : "Not Available");
+		int h = half + i;
+		if (court->startBlock + h < court->endBlock){
+			t = (block + h) * BLOCK_DURATION;
+			available = courts_getBlockReservation(courts_selected, block + h) == NULL;
+			strftime(cache[0], 6, "%H:%M", localtime(&t));
+			t = (block + h + 1) * BLOCK_DURATION;
+			strftime(cache[1], 6, "%H:%M", localtime(&t));
+			printf("%2d. %s to %s - %sAvailable\n", h + 1, cache[0], cache[1], available ? "" : "Not");
+		}
+	}
 }
