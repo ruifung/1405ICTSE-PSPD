@@ -54,7 +54,7 @@ void setup(){
 	getstr(user, 25, 0, false);
 	if (strlen(user) < 5){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		putch('\n');
+		_putch('\n');
 		printf(warn_usermin);
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();
@@ -64,7 +64,7 @@ void setup(){
 	getstr(pass, 25, '*', false);
 	if (strlen(pass) < 8){
 		SetConTextAttr(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		putch('\n');
+		_putch('\n');
 		printf(warn_passmin);
 		SetConTextAttr(FOREGROUND_WHITE);
 		pause();

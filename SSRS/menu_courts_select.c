@@ -63,8 +63,17 @@ bool menu_courts_sel_callback(UINT index){
 		courts_typeIDStr(courts[courts_selected].type),
 		courts[courts_selected].label, date_str);
 	print_slots();
-	if (courts_action == COURTS_ACTION_PLACE);// choose_slot(date);
-	else;//check_slot();
+	printf("\nPlease select a slot for %s, choose 0 or press escape to cancel.\n", 
+		courts_action == COURTS_ACTION_CHECK ? "details" : "booking");
+	printf("Slot: ");
+	uint slot = getint(2, true);
+	if (slot <= 0)return true;
+	if (slot > courts[courts_selected].endBlock - courts[courts_selected].startBlock){
+		printf("Invalid slot!\n");
+		pause();
+	}
+	if (courts_action == COURTS_ACTION_PLACE) ;// choose_slot(date);
+	else check_slot(slot);
 	return false;
 }
 
@@ -95,7 +104,23 @@ void print_slots(){
 			strftime(cache[0], 6, "%H:%M", localtime(&t));
 			t = (block + h + 1) * BLOCK_DURATION;
 			strftime(cache[1], 6, "%H:%M", localtime(&t));
-			printf("%2d. %s to %s - %sAvailable\n", h + 1, cache[0], cache[1], available ? "" : "Not");
+			printf("%2d. %s to %s - %-13s\n", h + 1, cache[0], cache[1], available ? "Available" : "Not Available");
 		}
+	}
+}
+
+void check_slot(uint slot){
+	uint block = courts_getFirstBlockSlot(date_selected / BLOCK_DURATION,
+		courts_selected) + slot - 1;
+	RESERVATION * res = courts_getBlockReservation(courts_selected, block);
+	if (res != NULL){
+		char cache[6];
+		RSVP_REF * ref = courts_getRefItem(res->ref_num);
+		printf("Customer Name: %s", ref->customerName);
+		time_t t = res->startTime * BLOCK_DURATION;
+		strftime(cache, 6, "%H:%M", localtime(t));
+		printf("Start Time: ");
+	} else {
+		
 	}
 }
