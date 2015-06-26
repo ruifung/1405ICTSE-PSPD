@@ -79,7 +79,7 @@ bool menu_admin_edit_callback(UINT index){
 		}
 		break;
 	case 4:
-		printf("This account is %san administrator so far.\n", staff->admin ? "" : "not");
+		printf("This account is %san administrator so far.\n", staff->admin ? "" : "not ");
 		staff->admin = confirm("Is this account is an administrator?");
 		break;
 	case 5:
