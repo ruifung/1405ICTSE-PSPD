@@ -117,7 +117,7 @@ void check_slot(uint slot){
 		char cache[6];
 		RSVP_REF * ref = courts_getRefItem(res->ref_num);
 		printf("Customer Name: %s\n", ref->customerName);
-		printf("Bill Code:     %08X", ref->ref_num);
+		printf("Bill Code:     %08X\n", ref->ref_num);
 		time_t t = res->startTime * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(&t));
 		printf("Start Time:    %s\n", cache);
@@ -166,7 +166,7 @@ void book_slot(uint slot){
 	strftime(e_str, 6, "%H:%M", localtime(&end));
 	strftime(d_str, 11, "%Y-%m-%d", localtime(&start));
 	printf("\nDate:          %s\n", d_str);
-	printf("Court:         %s Court %c", courts_typeIDStr(c_sel->id), c_sel->label);
+	printf("Court:         %s Court %c\n", courts_typeIDStr(c_sel->id), c_sel->label);
 	printf("Start Time:    %s\n", s_str);
 	printf("End Time:      %s\n", e_str);
 	printf("Duration:      %d hour(s) %d minute(s)\n", duration / 2, (duration % 1) * 30);
