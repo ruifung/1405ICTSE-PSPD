@@ -49,7 +49,7 @@ bool menu_courts_book_callback(UINT index){
 			pause();
 			return true;
 		};
-		//courts_save(); wont save until ruifung fix it
+		courts_save();
 		clrscr;
 		courts_printRefReceipt(stdout, pending->ref_num);
 		if (confirm("\nDo you wish to print out the receipt?")){
@@ -65,6 +65,7 @@ bool menu_courts_book_callback(UINT index){
 				system(cmd);
 			} else _pause("ERROR: Failed to create %s", path);
 		}
+		pending = NULL;
 		menu_switch(menu_courts());
 		break;
 	case 3:
