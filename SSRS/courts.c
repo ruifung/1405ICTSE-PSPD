@@ -295,6 +295,7 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 		reservations.lastID--;
 		return NULL;
 	}
+	reservations.data = newData;
 	bool refLinked = courts_refLinkRecur(&ref->list, NULL, rsvp);
 	if (!refLinked) {
 		free(rsvp);
@@ -354,14 +355,15 @@ bool courts_delReservation(RESERVATION *reservation) {
 	//Copy pointer to variable.
 	RESERVATION *tmpData = reservations.data[index];
 	//Calculate length of data after index.
-	uint len = (reservations.length - index - 1)*sizeof(reservations.data);
 	//Shift elements after index to left by 1.
-	memmove(&reservations.data[index],&reservations.data[index+1],len);
+	for (uint i = index; i < reservations.length; i++) {
+		reservations.data[i] = reservations.data[i + 1];
+	}
 	//Shrink array memory size.
 	RESERVATION **newArr = NULL;
 	uint newSize = --reservations.length;
 	if (newSize > 0) {
-		newArr = realloc(reservations.data, newSize * sizeof(newArr));
+		newArr = realloc(reservations.data, newSize * sizeof(RESERVATION *));
 		if (newArr == NULL)
 			return false;
 		else
