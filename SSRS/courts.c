@@ -139,7 +139,6 @@ _Bool courts_save() {
 	//Save reference number data
 	fwrite(&references.lastRef, sizeof(uint), 1, file);
 	fwrite(&references.refLen, sizeof(uint), 1, file);
-	references.rsvpRef = malloc(references.refLen * sizeof(RSVP_REF));
 	for (uint i = 0; i < references.refLen; i++) {
 		uint nameLen = (strlen(references.rsvpRef[i].customerName) + 1) * sizeof(char);
 		fwrite(&references.rsvpRef[i].ref_num, sizeof(uint), 1, file);
