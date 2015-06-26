@@ -293,6 +293,7 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 	if (newData == NULL) {
 		free(rsvp);
 		reservations.length--;
+		reservations.lastID--;
 		return NULL;
 	}
 	reservations.data[reservations.length - 1] = rsvp;
@@ -461,7 +462,7 @@ uint courts_getRefItemIndex(uint ref) {
 	uint upperIndex = references.refLen - 1;
 	uint lowerIndex = 0;
 	uint middle;
-	while (lowerIndex) {
+	for (;;) {
 		middle = lowerIndex + ((upperIndex - lowerIndex) / 2);
 		if (references.rsvpRef[middle].ref_num < ref)
 			lowerIndex = middle + 1;
