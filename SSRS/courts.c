@@ -290,12 +290,13 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 	rsvp->court_id = courtId;
 	rsvp->startTime = startTime;
 	rsvp->blockCount = blockCount;
-	RESERVATION **newData = realloc(reservations.data, ++reservations.length * sizeof(rsvp));
+	RESERVATION **newData = realloc(reservations.data, ++reservations.length * sizeof(RESERVATION *));
 	if (newData == NULL) {
 		free(rsvp);
+		reservations.length--;
 		return NULL;
 	}
-	reservations.data[(++reservations.length) - 1] = rsvp;
+	reservations.data[reservations.length - 1] = rsvp;
 	bst_addNode(&courts[courtId].reservations, &startTime, sizeof(startTime), rsvp, &courts_cmpr);
 	courts_refLinkRecur(&ref->list,NULL,rsvp);
 	return rsvp;
@@ -327,7 +328,7 @@ bool courts_delReservation(RESERVATION *reservation) {
 	RSVP_REF *ref = courts_getRefItem(reservation->ref_num);
 	if (ref != NULL) {
 		RSVP_LINK *linkItem = ref->list;
-		if (linkItem->item->id == reservation->id) {
+		if (linkItem != NULL && linkItem->item->id == reservation->id) {
 			if (linkItem->next != NULL)
 				linkItem->next->prev = linkItem->prev;
 			if (linkItem->prev != NULL)
@@ -336,6 +337,7 @@ bool courts_delReservation(RESERVATION *reservation) {
 				ref->list = linkItem->next;
 			}
 			free(linkItem);
+			linkItem = NULL;
 		}
 	}
 	//Look for reservation in global reservation array.
