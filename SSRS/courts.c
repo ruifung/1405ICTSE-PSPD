@@ -30,7 +30,7 @@ struct {
 int courts_cmpr(BST_CMPR_ARGS);
 bool courts_isBlockRangeEmptyRecur(BST_NODE *node, uint lowerBlock, uint upperBlock);
 uint courts_getReservationIndex(uint id);
-void courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item);
+bool courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item);
 int courts_cmprRef(const RSVP_REF *item1, const RSVP_REF *item2);
 uint courts_getRefItemIndex(uint ref);
 
@@ -99,7 +99,7 @@ _Bool courts_load() {
 	reservations_read(&reservations.lastID, sizeof(uint), 1, file);
 	reservations_read(&reservations.length, sizeof(uint), 1, file);
 	if (reservations.length > 0)
-		reservations.data = realloc(reservations.data, reservations.length * sizeof(tmpPtr));
+		reservations.data = realloc(reservations.data, reservations.length * sizeof(RESERVATION *));
 	if (reservations.data == NULL)
 		return false;
 	for (uint i = 0; i < reservations.length; i++) {
@@ -117,8 +117,6 @@ _Bool courts_load() {
 
 	if (reservations.length > 0)
 		qsort(references.rsvpRef, references.refLen, sizeof(RSVP_REF), &courts_cmprRef);
-	if (tmpPtr != NULL)
-		free(tmpPtr);
 	fclose(file);
 	return true;
 }
@@ -234,8 +232,9 @@ RESERVATION *courts_getBlockReservation(char courtId, uint block) {
 			//If a reservation exists for that block...
 			if (node != NULL) {
 				RESERVATION *rsvpPtr = node->data;
+				uint endBlock = (rsvpPtr->startTime + rsvpPtr->blockCount - 1);
 				//Check if its ending block is AFTER the specified block.
-				if ((rsvpPtr->startTime + rsvpPtr->blockCount - 1) >= block)
+				if (rsvpPtr->startTime <= block && endBlock >= block)
 					break;
 				else
 					node = NULL;
@@ -296,9 +295,15 @@ RESERVATION *courts_addReservation(uint ref_num, char courtId, uint startTime, u
 		reservations.lastID--;
 		return NULL;
 	}
+	bool refLinked = courts_refLinkRecur(&ref->list, NULL, rsvp);
+	if (!refLinked) {
+		free(rsvp);
+		reservations.length--;
+		reservations.lastID--;
+		return NULL;
+	}
 	reservations.data[reservations.length - 1] = rsvp;
 	bst_addNode(&courts[courtId].reservations, &startTime, sizeof(startTime), rsvp, &courts_cmpr);
-	courts_refLinkRecur(&ref->list,NULL,rsvp);
 	return rsvp;
 }
 
@@ -368,12 +373,14 @@ bool courts_delReservation(RESERVATION *reservation) {
 }
 
 int courts_cmpr(BST_CMPR_ARGS) {
+	uint k1 = *(uint *)key1;
+	uint k2 = *(uint *)key2;
 	//Cast pointer type from void * to uint * and subtract.
-	if (*(uint *)key1 < *(uint *)key2)
+	if (k1 < k2)
 		return -1;
-	else if (*(uint *)key1 > *(uint *)key2)
+	else if (k1 > k2)
 		return 1;
-	else if (*(uint *)key1 == *(uint *)key2)
+	else if (k1 == k2)
 		return 0;
 }
 
@@ -419,17 +426,19 @@ void courts_delRef(uint ref_num) {
 		return;
 	linkItem = ref->list;
 	//Walk the linked list to the end.
-	for (;;) {
-		if (linkItem->next != NULL)
-			linkItem = linkItem->next;
-		else
-			break;
-	}
-	//Walk it in reverse, freeing it as it goes along.
-	while (linkItem != NULL) {
-		tmpLink = linkItem;
-		linkItem = linkItem->prev;
-		free(tmpLink);
+	if (linkItem != NULL) {
+		for (;;) {
+			if (linkItem->next != NULL)
+				linkItem = linkItem->next;
+			else
+				break;
+		}
+		//Walk it in reverse, freeing it as it goes along.
+		while (linkItem != NULL) {
+			tmpLink = linkItem;
+			linkItem = linkItem->prev;
+			free(tmpLink);
+		}
 	}
 	//Shift all array elements right of item to the left by 1
 	for (uint i = index; i < references.refLen; i++) {
@@ -491,15 +500,18 @@ uint courts_countRefReservations(uint ref) {
 	return count;
 }
 
-void courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item) {
+bool courts_refLinkRecur(RSVP_LINK **link, RSVP_LINK *parent, RESERVATION *item) {
 	if (*link == NULL) {
 		*link = malloc(sizeof(RSVP_LINK));
+		if (link == NULL)
+			return false;
 		(*link)->item = item;
 		(*link)->next = NULL;
 		(*link)->prev = parent;
+		return true;
 	}
 	else {
-		courts_refLinkRecur(&(*link)->next,*link,item);
+		return courts_refLinkRecur(&(*link)->next,*link,item);
 	}
 }
 
