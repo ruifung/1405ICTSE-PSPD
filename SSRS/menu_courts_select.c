@@ -121,7 +121,7 @@ void check_slot(uint slot){
 		time_t t = res->startTime * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(&t));
 		printf("Start Time:    %s\n", cache);
-		t = (res->startTime + res->blockCount + 1) * BLOCK_DURATION;
+		t = (res->startTime + res->blockCount) * BLOCK_DURATION;
 		strftime(cache, 6, "%H:%M", localtime(&t));
 		printf("End Time:      %s\n", cache);
 		printf("Duration:      %d hour(s) %d minute(s)\n",
